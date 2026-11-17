@@ -1,1 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control de Catequesis - Ingreso</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f6f9; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .login-card { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%; max-width: 350px; }
+        h2 { text-align: center; color: #333; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background-color: #2e7d32; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        button:hover { background-color: #1b5e20; }
+        #mensaje { text-align: center; margin-top: 10px; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <h2>Catequesis Parroquial</h2>
+        <input type="email" id="email" placeholder="Correo electrónico" required>
+        <input type="password" id="password" placeholder="Contraseña" required>
+        <button id="btnLogin">Iniciar Sesión</button>
+        <p id="mensaje"></p>
+    </div>
+
+    <script type="module">
+        import { supabase } from './supabaseClient.js'
+
+        const btnLogin = document.getElementById('btnLogin')
+        const mensaje = document.getElementById('mensaje')
+
+        btnLogin.addEventListener('click', async () => {
+            const email = document.getElementById('email').value.trim()
+            const password = document.getElementById('password').value.trim()
+
+            if (!email || !password) {
+                mensaje.style.color = 'red'
+                mensaje.textContent = 'Por favor completa todos los campos.'
+                return
+            }
+
+            mensaje.style.color = '#333'
+            mensaje.textContent = 'Iniciando sesión...'
+
+            const { data, error } = await supabase.auth.signInWithPassword({
+                email: email,
+                password: password
+            })
+
+            if (error) {
+                mensaje.style.color = 'red'
+                mensaje.textContent = 'Error: ' + error.message
+            } else {
+                mensaje.style.color = 'green'
+                mensaje.textContent = '¡Ingreso exitoso! Redirigiendo...'
+                // Aquí más adelante cargaremos el panel principal
+            }
+        })
+    </script>
+
+</body>
+</html>
 
