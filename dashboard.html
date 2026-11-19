@@ -8,7 +8,7 @@
         body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 0; color: #333; }
         header { background-color: #2e7d32; color: white; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
         header h2 { margin: 0; font-size: 20px; }
-        .container { max-width: 1000px; margin: 25px auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); box-sizing: border-box; }
+        .container { max-width: 1100px; margin: 25px auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); box-sizing: border-box; }
         .btn-logout { background-color: #c62828; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .btn-logout:hover { background-color: #b71c1c; }
         .tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
@@ -16,15 +16,34 @@
         .tab-btn.active { background: #2e7d32; color: white; }
         .section { display: none; }
         .section.active { display: block; }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 15px; }
-        input, select { width: 100%; padding: 9px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin-bottom: 15px; }
+        label { display: block; font-size: 12px; color: #555; margin-bottom: 4px; font-weight: bold; }
+        input, select { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 13px; }
+        .input-date-inline { padding: 5px; font-size: 12px; min-width: 130px; }
         .btn-save { background-color: #2e7d32; color: white; border: none; padding: 10px 18px; border-radius: 4px; cursor: pointer; font-weight: bold; }
         .btn-save:hover { background-color: #1b5e20; }
+        .btn-edit-date { background-color: #1565c0; color: white; border: none; padding: 5px 9px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; }
+        .btn-edit-date:hover { background-color: #0d47a1; }
+        .btn-secondary { background-color: #455a64; color: white; border: none; padding: 9px 14px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 13px; }
+        .btn-secondary:hover { background-color: #263238; }
+        .btn-baja { background-color: #ef6c00; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; }
+        .btn-baja:hover { background-color: #e65100; }
+        .btn-reactivar { background-color: #1565c0; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; }
+        .btn-reactivar:hover { background-color: #0d47a1; }
+        .badge-activo { color: #2e7d32; font-weight: bold; }
+        .badge-inactivo { color: #c62828; font-weight: bold; }
         .msg { margin-top: 10px; font-size: 14px; font-weight: bold; }
         .table-wrap { overflow-x: auto; margin-top: 20px; }
-        table { width: 100%; border-collapse: collapse; font-size: 14px; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th, td { border: 1px solid #ddd; padding: 9px; text-align: left; vertical-align: middle; }
         th { background-color: #f0f4f0; color: #2e7d32; }
+        .report-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 10px; }
+        @media print {
+            header, .tabs, #formCatequizando, #formAsistencia, #formCatequista, .report-filter-form, .btn-edit-date, .btn-baja, .btn-reactivar {
+                display: none !important;
+            }
+            .container { box-shadow: none; margin: 0; max-width: 100%; }
+        }
     </style>
 </head>
 <body>
@@ -36,12 +55,13 @@
 
     <div class="container">
         <h1>Panel de Control</h1>
-        <p>Gestiona catequizandos, asistencia (incluyendo el tema dado) y catequistas.</p>
+        <p>Gestiona catequizandos, fechas de comunión y confirmación, asistencia y reportes.</p>
 
         <div class="tabs">
             <button class="tab-btn active" data-tab="sec-catequizandos">Catequizandos</button>
             <button class="tab-btn" data-tab="sec-asistencia">Asistencia</button>
             <button class="tab-btn" data-tab="sec-catequistas">Catequistas</button>
+            <button class="tab-btn" data-tab="sec-reportes">Reportes</button>
         </div>
 
         <!-- SECCIÓN CATEQUIZANDOS -->
@@ -49,14 +69,40 @@
             <h3>Registrar Catequizando</h3>
             <form id="formCatequizando">
                 <div class="form-grid">
-                    <input type="text" id="czNombre" placeholder="Nombre completo" required>
-                    <input type="date" id="czFechaNac" title="Fecha de nacimiento">
-                    <input type="text" id="czNivel" placeholder="Nivel / Etapa (ej. 1er Nivel)">
-                    <input type="text" id="czRepresentante" placeholder="Nombre del representante">
-                    <input type="text" id="czTelefono" placeholder="Teléfono representante">
-                    <select id="czCatequista">
-                        <option value="">-- Catequista asignado --</option>
-                    </select>
+                    <div>
+                        <label for="czNombre">Nombre completo</label>
+                        <input type="text" id="czNombre" placeholder="Nombre completo" required>
+                    </div>
+                    <div>
+                        <label for="czFechaNac">Fecha de nacimiento</label>
+                        <input type="date" id="czFechaNac">
+                    </div>
+                    <div>
+                        <label for="czNivel">Nivel / Etapa</label>
+                        <input type="text" id="czNivel" placeholder="Ej. 1er Nivel">
+                    </div>
+                    <div>
+                        <label for="czRepresentante">Representante</label>
+                        <input type="text" id="czRepresentante" placeholder="Nombre del representante">
+                    </div>
+                    <div>
+                        <label for="czTelefono">Teléfono representante</label>
+                        <input type="text" id="czTelefono" placeholder="Teléfono">
+                    </div>
+                    <div>
+                        <label for="czCatequista">Catequista asignado</label>
+                        <select id="czCatequista">
+                            <option value="">-- Catequista asignado --</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="czFechaComunion">Fecha de Comunión</label>
+                        <input type="date" id="czFechaComunion">
+                    </div>
+                    <div>
+                        <label for="czFechaConfirmacion">Fecha de Confirmación</label>
+                        <input type="date" id="czFechaConfirmacion">
+                    </div>
                 </div>
                 <button type="submit" class="btn-save">Guardar Catequizando</button>
                 <div id="msgCatequizando" class="msg"></div>
@@ -69,31 +115,47 @@
                             <th>Nombre</th>
                             <th>Nivel</th>
                             <th>Representante</th>
-                            <th>Teléfono</th>
                             <th>Catequista</th>
+                            <th>Fecha Comunión</th>
+                            <th>Fecha Confirmación</th>
+                            <th>Guardar Fechas</th>
                         </tr>
                     </thead>
                     <tbody id="tablaCatequizandos"></tbody>
                 </table>
             </div>
-        </section>
-
-        <!-- SECCIÓN ASISTENCIA -->
+                        </section>
+                                <!-- SECCIÓN ASISTENCIA -->
         <section id="sec-asistencia" class="section">
             <h3>Registrar Asistencia</h3>
             <form id="formAsistencia">
                 <div class="form-grid">
-                    <input type="date" id="asFecha" required>
-                    <input type="text" id="asTema" placeholder="Tema dado en el encuentro" required>
-                    <select id="asCatequizando" required>
-                        <option value="">-- Seleccionar catequizando --</option>
-                    </select>
-                    <select id="asEstado">
-                        <option value="Presente">Presente</option>
-                        <option value="Ausente">Ausente</option>
-                        <option value="Justificado">Justificado</option>
-                    </select>
-                    <input type="text" id="asObservacion" placeholder="Observación (opcional)">
+                    <div>
+                        <label for="asFecha">Fecha del encuentro</label>
+                        <input type="date" id="asFecha" required>
+                    </div>
+                    <div>
+                        <label for="asTema">Tema dado</label>
+                        <input type="text" id="asTema" placeholder="Tema dado en el encuentro" required>
+                    </div>
+                    <div>
+                        <label for="asCatequizando">Catequizando</label>
+                        <select id="asCatequizando" required>
+                            <option value="">-- Seleccionar catequizando --</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="asEstado">Estado</label>
+                        <select id="asEstado">
+                            <option value="Presente">Presente</option>
+                            <option value="Ausente">Ausente</option>
+                            <option value="Justificado">Justificado</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="asObservacion">Observación</label>
+                        <input type="text" id="asObservacion" placeholder="Opcional">
+                    </div>
                 </div>
                 <button type="submit" class="btn-save">Guardar Asistencia</button>
                 <div id="msgAsistencia" class="msg"></div>
@@ -120,9 +182,18 @@
             <h3>Registrar Catequista</h3>
             <form id="formCatequista">
                 <div class="form-grid">
-                    <input type="text" id="cqNombre" placeholder="Nombre completo" required>
-                    <input type="text" id="cqTelefono" placeholder="Teléfono">
-                    <input type="text" id="cqNivel" placeholder="Nivel / Grupo">
+                    <div>
+                        <label for="cqNombre">Nombre completo</label>
+                        <input type="text" id="cqNombre" placeholder="Nombre completo" required>
+                    </div>
+                    <div>
+                        <label for="cqTelefono">Teléfono</label>
+                        <input type="text" id="cqTelefono" placeholder="Teléfono">
+                    </div>
+                    <div>
+                        <label for="cqNivel">Nivel / Grupo</label>
+                        <input type="text" id="cqNivel" placeholder="Nivel / Grupo">
+                    </div>
                 </div>
                 <button type="submit" class="btn-save">Guardar Catequista</button>
                 <div id="msgCatequista" class="msg"></div>
@@ -136,18 +207,66 @@
                             <th>Teléfono</th>
                             <th>Nivel</th>
                             <th>Estado</th>
+                            <th>Acción</th>
                         </tr>
                     </thead>
                     <tbody id="tablaCatequistas"></tbody>
                 </table>
             </div>
         </section>
-    </div>
 
-    <script type="module">
+        <!-- SECCIÓN REPORTES -->
+        <section id="sec-reportes" class="section">
+            <h3>Reportes de Comunión y Confirmación</h3>
+            <div class="report-filter-form">
+                <div class="form-grid">
+                    <div>
+                        <label for="repTipoEvento">Tipo de evento</label>
+                        <select id="repTipoEvento">
+                            <option value="todos">Con fecha de Comunión o Confirmación</option>
+                            <option value="comunion">Solo Primera Comunión</option>
+                            <option value="confirmacion">Solo Confirmación</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="repDesde">Desde (fecha del evento)</label>
+                        <input type="date" id="repDesde">
+                    </div>
+                    <div>
+                        <label for="repHasta">Hasta (fecha del evento)</label>
+                        <input type="date" id="repHasta">
+                    </div>
+                </div>
+                <div class="report-actions">
+                    <button type="button" class="btn-save" id="btnGenerarReporte">Generar Reporte</button>
+                    <button type="button" class="btn-secondary" id="btnExportarCsv">Descargar CSV</button>
+                    <button type="button" class="btn-secondary" id="btnImprimirReporte">Imprimir / Guardar PDF</button>
+                </div>
+                <div id="msgReporte" class="msg"></div>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Catequizando</th>
+                            <th>Nivel</th>
+                            <th>Representante</th>
+                            <th>Fecha Comunión</th>
+                            <th>Fecha Confirmación</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaReporte"></tbody>
+                </table>
+            </div>
+        </section>
+                                </div>
+               <script type="module">
         import { supabase } from './supabaseClient.js'
 
-        // 1. Verificar sesión activa
+        let catequizandosCache = []
+        let ultimoReporte = []
+
         async function verificarSesion() {
             const { data: { session } } = await supabase.auth.getSession()
             if (!session) {
@@ -157,13 +276,11 @@
             return true
         }
 
-        // 2. Cerrar sesión
         document.getElementById('btnCerrarSesion').addEventListener('click', async () => {
             await supabase.auth.signOut()
             window.location.href = './index.html'
         })
 
-        // 3. Navegación por pestañas
         const tabBtns = document.querySelectorAll('.tab-btn')
         const sections = document.querySelectorAll('.section')
         tabBtns.forEach(btn => {
@@ -172,13 +289,64 @@
                 sections.forEach(s => s.classList.remove('active'))
                 btn.classList.add('active')
                 document.getElementById(btn.dataset.tab).classList.add('active')
+                if (btn.dataset.tab === 'sec-reportes') {
+                    generarReporte()
+                }
             })
         })
 
-        // Fecha de hoy por defecto en asistencia
         document.getElementById('asFecha').valueAsDate = new Date()
 
-        // 4. Cargar Catequistas
+        window.cambiarEstadoCatequista = async function(id, estadoActual, nombre) {
+            const nuevoEstado = !estadoActual
+            const accionTexto = nuevoEstado ? 'reactivar' : 'dar de baja'
+            if (!confirm(`¿Seguro que deseas ${accionTexto} a ${nombre}?`)) return
+
+            const msg = document.getElementById('msgCatequista')
+            const { error } = await supabase
+                .from('catequistas')
+                .update({ activo: nuevoEstado })
+                .eq('id', id)
+
+            if (error) {
+                msg.style.color = 'red'
+                msg.textContent = 'Error al actualizar estado: ' + error.message
+            } else {
+                msg.style.color = 'green'
+                msg.textContent = nuevoEstado
+                    ? `Catequista ${nombre} reactivado.`
+                    : `Catequista ${nombre} dado de baja (Inactivo).`
+                await cargarCatequistas()
+            }
+        }
+
+        window.guardarFechasSacramentos = async function(id, nombre) {
+            const inputComunion = document.getElementById(`comunion-${id}`)
+            const inputConfirmacion = document.getElementById(`confirmacion-${id}`)
+            const msg = document.getElementById('msgCatequizando')
+
+            const fechaComunion = inputComunion.value || null
+            const fechaConfirmacion = inputConfirmacion.value || null
+
+            const { error } = await supabase
+                .from('catequizandos')
+                .update({
+                    fecha_comunion: fechaComunion,
+                    fecha_confirmacion: fechaConfirmacion
+                })
+                .eq('id', id)
+
+            if (error) {
+                msg.style.color = 'red'
+                msg.textContent = 'Error al actualizar fechas: ' + error.message
+            } else {
+                msg.style.color = 'green'
+                msg.textContent = `Fechas actualizadas para ${nombre}.`
+                await cargarCatequizandos()
+                generarReporte()
+            }
+        }
+
         async function cargarCatequistas() {
             const { data, error } = await supabase
                 .from('catequistas')
@@ -196,19 +364,32 @@
             selectCz.innerHTML = '<option value="">-- Catequista asignado --</option>'
 
             data.forEach(cq => {
+                const estaActivo = cq.activo !== false
+                const estadoHtml = estaActivo
+                    ? '<span class="badge-activo">Activo</span>'
+                    : '<span class="badge-inactivo">Inactivo</span>'
+
+                const nombreEscapado = cq.nombre_completo.replace(/'/g, "\\'")
+                const botonHtml = estaActivo
+                    ? `<button type="button" class="btn-baja" onclick="cambiarEstadoCatequista('${cq.id}', true, '${nombreEscapado}')">Dar de baja</button>`
+                    : `<button type="button" class="btn-reactivar" onclick="cambiarEstadoCatequista('${cq.id}', false, '${nombreEscapado}')">Reactivar</button>`
+
                 tbody.innerHTML += `
                     <tr>
                         <td>${cq.nombre_completo}</td>
                         <td>${cq.telefono || '-'}</td>
                         <td>${cq.nivel || '-'}</td>
-                        <td>${cq.activo ? 'Activo' : 'Inactivo'}</td>
+                        <td>${estadoHtml}</td>
+                        <td>${botonHtml}</td>
                     </tr>
                 `
-                selectCz.innerHTML += `<option value="${cq.id}">${cq.nombre_completo}</option>`
+
+                if (estaActivo) {
+                    selectCz.innerHTML += `<option value="${cq.id}">${cq.nombre_completo}</option>`
+                }
             })
         }
 
-        // 5. Cargar Catequizandos
         async function cargarCatequizandos() {
             const { data, error } = await supabase
                 .from('catequizandos')
@@ -220,27 +401,33 @@
                 return
             }
 
+            catequizandosCache = data || []
             const tbody = document.getElementById('tablaCatequizandos')
             const selectAs = document.getElementById('asCatequizando')
             tbody.innerHTML = ''
             selectAs.innerHTML = '<option value="">-- Seleccionar catequizando --</option>'
 
-            data.forEach(cz => {
+            catequizandosCache.forEach(cz => {
                 const nombreCq = cz.catequistas ? cz.catequistas.nombre_completo : '-'
+                const nombreEscapado = cz.nombre_completo.replace(/'/g, "\\'")
+                const valComunion = cz.fecha_comunion || ''
+                const valConfirmacion = cz.fecha_confirmacion || ''
+
                 tbody.innerHTML += `
                     <tr>
                         <td>${cz.nombre_completo}</td>
                         <td>${cz.nivel || '-'}</td>
                         <td>${cz.representante || '-'}</td>
-                        <td>${cz.telefono_representante || '-'}</td>
                         <td>${nombreCq}</td>
+                        <td><input type="date" id="comunion-${cz.id}" class="input-date-inline" value="${valComunion}"></td>
+                        <td><input type="date" id="confirmacion-${cz.id}" class="input-date-inline" value="${valConfirmacion}"></td>
+                        <td><button type="button" class="btn-edit-date" onclick="guardarFechasSacramentos('${cz.id}', '${nombreEscapado}')">Actualizar</button></td>
                     </tr>
                 `
                 selectAs.innerHTML += `<option value="${cz.id}">${cz.nombre_completo}</option>`
             })
         }
 
-        // 6. Cargar Asistencia (con tema_dado)
         async function cargarAsistencia() {
             const { data, error } = await supabase
                 .from('asistencia')
@@ -269,14 +456,14 @@
             })
         }
 
-        // 7. Guardar Catequista
         document.getElementById('formCatequista').addEventListener('submit', async (e) => {
             e.preventDefault()
             const msg = document.getElementById('msgCatequista')
             const { error } = await supabase.from('catequistas').insert([{
                 nombre_completo: document.getElementById('cqNombre').value.trim(),
                 telefono: document.getElementById('cqTelefono').value.trim() || null,
-                nivel: document.getElementById('cqNivel').value.trim() || null
+                nivel: document.getElementById('cqNivel').value.trim() || null,
+                activo: true
             }])
 
             if (error) {
@@ -290,12 +477,13 @@
             }
         })
 
-        // 8. Guardar Catequizando
         document.getElementById('formCatequizando').addEventListener('submit', async (e) => {
             e.preventDefault()
             const msg = document.getElementById('msgCatequizando')
             const cqId = document.getElementById('czCatequista').value || null
             const fechaNac = document.getElementById('czFechaNac').value || null
+            const fechaComunion = document.getElementById('czFechaComunion').value || null
+            const fechaConfirmacion = document.getElementById('czFechaConfirmacion').value || null
 
             const { error } = await supabase.from('catequizandos').insert([{
                 nombre_completo: document.getElementById('czNombre').value.trim(),
@@ -303,7 +491,9 @@
                 nivel: document.getElementById('czNivel').value.trim() || null,
                 representante: document.getElementById('czRepresentante').value.trim() || null,
                 telefono_representante: document.getElementById('czTelefono').value.trim() || null,
-                catequista_id: cqId
+                catequista_id: cqId,
+                fecha_comunion: fechaComunion,
+                fecha_confirmacion: fechaConfirmacion
             }])
 
             if (error) {
@@ -314,10 +504,10 @@
                 msg.textContent = 'Catequizando guardado.'
                 e.target.reset()
                 await cargarCatequizandos()
+                generarReporte()
             }
         })
 
-        // 9. Guardar Asistencia
         document.getElementById('formAsistencia').addEventListener('submit', async (e) => {
             e.preventDefault()
             const msg = document.getElementById('msgAsistencia')
@@ -344,15 +534,99 @@
             }
         })
 
-        // Inicialización
+        function dentroDeRango(fechaStr, desde, hasta) {
+            if (!fechaStr) return false
+            if (desde && fechaStr < desde) return false
+            if (hasta && fechaStr > hasta) return false
+            return true
+        }
+
+        function generarReporte() {
+            const tipo = document.getElementById('repTipoEvento').value
+            const desde = document.getElementById('repDesde').value
+            const hasta = document.getElementById('repHasta').value
+            const msg = document.getElementById('msgReporte')
+            const tbody = document.getElementById('tablaReporte')
+
+            const filtrados = catequizandosCache.filter(cz => {
+                const fCom = cz.fecha_comunion
+                const fConf = cz.fecha_confirmacion
+
+                if (tipo === 'comunion') {
+                    return Boolean(fCom) && (!desde && !hasta ? true : dentroDeRango(fCom, desde, hasta))
+                }
+                if (tipo === 'confirmacion') {
+                    return Boolean(fConf) && (!desde && !hasta ? true : dentroDeRango(fConf, desde, hasta))
+                }
+                if (!desde && !hasta) return Boolean(fCom || fConf)
+                return dentroDeRango(fCom, desde, hasta) || dentroDeRango(fConf, desde, hasta)
+            })
+
+            ultimoReporte = filtrados
+            tbody.innerHTML = ''
+
+            if (filtrados.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5">No hay registros que coincidan con el filtro.</td></tr>'
+                msg.style.color = '#555'
+                msg.textContent = '0 registros encontrados.'
+                return
+            }
+
+            filtrados.forEach(cz => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${cz.nombre_completo}</td>
+                        <td>${cz.nivel || '-'}</td>
+                        <td>${cz.representante || '-'}</td>
+                        <td>${cz.fecha_comunion || '-'}</td>
+                        <td>${cz.fecha_confirmacion || '-'}</td>
+                    </tr>
+                `
+            })
+
+            msg.style.color = 'green'
+            msg.textContent = `Total en reporte: ${filtrados.length} catequizando(s).`
+        }
+
+        document.getElementById('btnGenerarReporte').addEventListener('click', generarReporte)
+
+        document.getElementById('btnExportarCsv').addEventListener('click', () => {
+            if (ultimoReporte.length === 0) {
+                alert('No hay datos en el reporte para exportar.')
+                return
+            }
+            const encabezados = ['Catequizando', 'Nivel', 'Representante', 'Fecha Comunion', 'Fecha Confirmacion']
+            const filas = ultimoReporte.map(cz => [
+                `"${(cz.nombre_completo || '').replace(/"/g, '""')}"`,
+                `"${(cz.nivel || '').replace(/"/g, '""')}"`,
+                `"${(cz.representante || '').replace(/"/g, '""')}"`,
+                `"${cz.fecha_comunion || ''}"`,
+                `"${cz.fecha_confirmacion || ''}"`
+            ].join(','))
+
+            const csvContent = '\uFEFF' + [encabezados.join(','), ...filas].join('\n')
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+            const url = URL.createObjectURL(blob)
+            const link = document.createElement('a')
+            link.href = url
+            link.download = 'reporte_sacramentos_catequesis.csv'
+            link.click()
+            URL.revokeObjectURL(url)
+        })
+
+        document.getElementById('btnImprimirReporte').addEventListener('click', () => {
+            window.print()
+        })
+
         const ok = await verificarSesion()
         if (ok) {
             await cargarCatequistas()
             await cargarCatequizandos()
             await cargarAsistencia()
+            generarReporte()
         }
     </script>
 
 </body>
-    </html>
+</html>
     
