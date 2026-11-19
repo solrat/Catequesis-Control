@@ -272,7 +272,112 @@
                     </table>
                 </div>
             </section>
-                        <section id="sec-formacion" class="section">
+                        <section id="sec-asistencia" class="section">
+                <h3>Asistencia y Seguimiento</h3>
+
+                <div class="metricas-grid">
+                    <div class="metrica-card">
+                        <strong id="metMesesClase">0</strong>
+                        <span>Meses de clase impartidos</span>
+                    </div>
+                    <div class="metrica-card">
+                        <strong id="metTemasDados">0</strong>
+                        <span>Temas registrados</span>
+                    </div>
+                    <div class="metrica-card">
+                        <strong id="metAusenciasCriticas">0</strong>
+                        <span id="lblMetAusenciasCriticas">Catequizandos sobre límite de ausencias</span>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <select id="asisCatequizando"></select>
+                    <input type="date" id="asisFecha">
+                    <input type="text" id="asisTema" placeholder="Tema dado en clase">
+                    <select id="asisEstado">
+                        <option value="presente">Presente</option>
+                        <option value="ausente">Ausente</option>
+                        <option value="ausente_justificado">Ausente justificado</option>
+                    </select>
+                    <input type="text" id="asisObservacion" placeholder="Observación">
+                    <button class="btn-verde" id="btnGuardarAsistencia">Registrar Asistencia</button>
+                </div>
+
+                <div class="tabla-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Catequizando</th>
+                                <th>Tema dado</th>
+                                <th>Estado</th>
+                                <th>Observación</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyAsistencia"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="sec-catequistas" class="section">
+                <h3>Catequistas y Coordinadores</h3>
+
+                <div id="boxCoordinadoresParroco" style="display:none; background:#fff3e0; border:1px solid #ffcc80; padding:12px; border-radius:6px; margin-bottom:16px;">
+                    <strong>Gestión de Coordinadores / Master (Párroco):</strong>
+                    <div id="listaCoordinadoresParroco" style="margin-top:8px;"></div>
+                </div>
+
+                <div class="form-grid">
+                    <input type="text" id="catqNombre" placeholder="Nombre completo del catequista">
+                    <input type="email" id="catqCorreo" placeholder="Correo de acceso">
+                    <input type="password" id="catqPassword" placeholder="Contraseña inicial">
+                    <input type="text" id="catqSector" placeholder="Sector asignado">
+                    <select id="catqLugar">
+                        <option value="Capilla">Capilla</option>
+                        <option value="Escuela">Escuela</option>
+                        <option value="Casa particular">Casa particular</option>
+                    </select>
+                    <button class="btn-verde" id="btnCrearCatequista">Registrar Catequista</button>
+                </div>
+
+                <div id="boxEditarCatequista" class="panel-detalle" style="background:#e3f2fd; border-color:#90caf9;">
+                    <strong style="display:block; margin-bottom:8px; color:#0d47a1;">Editar registro de catequista</strong>
+                    <input type="hidden" id="editCatqId">
+                    <div class="form-grid">
+                        <input type="text" id="editCatqNombre" placeholder="Nombre completo">
+                        <input type="email" id="editCatqCorreo" placeholder="Correo de acceso">
+                        <input type="text" id="editCatqSector" placeholder="Sector">
+                        <select id="editCatqLugar">
+                            <option value="Capilla">Capilla</option>
+                            <option value="Escuela">Escuela</option>
+                            <option value="Casa particular">Casa particular</option>
+                        </select>
+                        <select id="editCatqActivo">
+                            <option value="true">Activo</option>
+                            <option value="false">De baja</option>
+                        </select>
+                    </div>
+                    <button class="btn-verde" id="btnGuardarEdicionCatequista">Guardar cambios</button>
+                    <button class="btn-gris" id="btnCancelarEdicionCatequista" type="button">Cancelar</button>
+                </div>
+
+                <div class="tabla-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Catequista</th>
+                                <th>Ciclo / Parroquia</th>
+                                <th>Sector y Lugar</th>
+                                <th>Estado</th>
+                                <th>Meses / Temas</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyCatequistas"></tbody>
+                    </table>
+                </div>
+                        </section>
+                                 <section id="sec-formacion" class="section">
                 <h3>Talleres, Quiz, Reportes y Configuración</h3>
 
                 <div class="form-grid">
@@ -325,7 +430,7 @@
             </section>
         </div>
         </div>
-            <script type="module">
+        <script type="module">
         import { supabase } from './supabaseClient.js'
 
         window.appState = {
@@ -373,16 +478,19 @@
             const { data } = await supabase.from('configuracion_parroquia').select('*').limit(1).maybeSingle()
             if (data) window.appState.configParroquia = { ...window.appState.configParroquia, ...data }
             const cfg = window.appState.configParroquia
-            document.getElementById('tituloHeaderParroquia').textContent = `Sistema de Catequesis · ${cfg.nombre_parroquia}`
-            document.getElementById('subtituloHeaderParroquia').textContent = `${cfg.localidad || 'Parroquia'} · Límite ausencias: ${cfg.limite_ausencias} · Visitas catequista: ${cfg.visitas_catequista_requeridas} · Edad etapa: ${cfg.edad_minima_etapa}+`
-            document.getElementById('lblMetAusenciasCriticas').textContent = `Catequizandos con > ${cfg.limite_ausencias} ausencias`
+            document.getElementById('tituloHeaderParroquia').textContent =
+                `Sistema de Catequesis · ${cfg.nombre_parroquia}`
+            document.getElementById('subtituloHeaderParroquia').textContent =
+                cfg.localidad ? `${cfg.localidad} · Gestión Pastoral y Sacramental` : 'Gestión Pastoral y Sacramental'
+            document.getElementById('lblMetAusenciasCriticas').textContent =
+                `Catequizandos con > ${cfg.limite_ausencias} ausencias`
             document.getElementById('cfgNombreParroquia').value = cfg.nombre_parroquia || ''
             document.getElementById('cfgLocalidad').value = cfg.localidad || ''
             document.getElementById('cfgLimiteAusencias').value = cfg.limite_ausencias
             document.getElementById('cfgVisitasCat').value = cfg.visitas_catequista_requeridas
             document.getElementById('cfgEdadMinima').value = cfg.edad_minima_etapa
         }
-                        async function cargarAusenciasConteo() {
+                    async function cargarAusenciasConteo() {
             const { data } = await supabase.from('asistencia').select('*')
             asistenciaCache = data || []
             ausenciasPorAlumno = {}
@@ -511,7 +619,7 @@
             document.getElementById(id)?.addEventListener('input', renderizarCatequizandos)
             document.getElementById(id)?.addEventListener('change', renderizarCatequizandos)
         })
-                        document.getElementById('btnGuardarCatequizando')?.addEventListener('click', async () => {
+                    document.getElementById('btnGuardarCatequizando')?.addEventListener('click', async () => {
             const nombre = document.getElementById('catNombre').value.trim()
             const nac = document.getElementById('catNacimiento').value
             const tel = document.getElementById('catTelefono').value.trim()
@@ -636,8 +744,8 @@
             if (!causa || !causa.trim()) return alert('Debes indicar una causa para retirar al catequizando.')
             await supabase.from('catequizandos').update({ retirado: true, fecha_retiro: new Date().toISOString().slice(0, 10), causa_retiro: causa.trim(), estado_seguimiento: 'retirado' }).eq('id', id)
             cargarCatequizandos()
-                        }
-                        function poblarSelectCatequizandosAsistencia() {
+            }
+                    function poblarSelectCatequizandosAsistencia() {
             const sel = document.getElementById('asisCatequizando')
             if (!sel) return
             sel.innerHTML = catequizandosCache
@@ -705,7 +813,7 @@
             await supabase.from('administradores').delete().eq('id', id)
             cargarCatequistas()
                 }
-                        async function cargarCatequistas() {
+                    async function cargarCatequistas() {
             const rol = window.appState.perfilActual?.rol
             if (rol !== 'master' && rol !== 'parroco') return
 
@@ -854,8 +962,8 @@
             const nuevoCiclo = Number(cicloActual || 1) + 1
             await supabase.from('catequistas').update({ activo: true, ciclo_actual: nuevoCiclo }).eq('id', id)
             cargarCatequistas()
-                    }
-                        async function cargarFormacion() {
+            }
+                    async function cargarFormacion() {
             const { data: talleres } = await supabase.from('talleres').select('*').order('fecha', { ascending: true })
             const hoy = new Date().toISOString().slice(0, 10)
             document.getElementById('listaTalleres').innerHTML = (talleres || []).map(t => {
@@ -980,21 +1088,39 @@
 
                 await cargarConfigParroquia().catch(() => {})
 
-                const { data: adminPerfil } = await supabase
+                let { data: adminPerfil } = await supabase
                     .from('administradores')
                     .select('*')
                     .eq('auth_user_id', session.user.id)
                     .maybeSingle()
 
+                if (!adminPerfil && session.user.email) {
+                    const porCorreo = await supabase
+                        .from('administradores')
+                        .select('*')
+                        .ilike('correo_acceso', session.user.email)
+                        .maybeSingle()
+                    adminPerfil = porCorreo.data || null
+                }
+
                 let perfilActual = null
                 if (adminPerfil) {
                     perfilActual = { ...adminPerfil, rol: adminPerfil.rol || 'master' }
                 } else {
-                    const { data: catqPerfil } = await supabase
+                    let { data: catqPerfil } = await supabase
                         .from('catequistas')
                         .select('*')
                         .eq('auth_user_id', session.user.id)
                         .maybeSingle()
+
+                    if (!catqPerfil && session.user.email) {
+                        const porCorreoCatq = await supabase
+                            .from('catequistas')
+                            .select('*')
+                            .ilike('correo_acceso', session.user.email)
+                            .maybeSingle()
+                        catqPerfil = porCorreoCatq.data || null
+                    }
 
                     perfilActual = catqPerfil
                         ? { ...catqPerfil, rol: 'catequista' }
