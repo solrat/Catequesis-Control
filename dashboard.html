@@ -6,40 +6,52 @@
     <title>Panel de Catequesis - Catequesis Biscucuy</title>
     <style>
         body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 0; color: #333; }
-        header { background-color: #2e7d32; color: white; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-        header h2 { margin: 0; font-size: 20px; }
-        .container { max-width: 1100px; margin: 25px auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.08); box-sizing: border-box; }
-        .btn-logout { background-color: #c62828; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        header { background-color: #2e7d32; color: white; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+        header h2 { margin: 0; font-size: 20px; line-height: 1.2; }
+        .container { max-width: 1000px; margin: 25px auto; background: white; padding: 30px 25px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); box-sizing: border-box; }
+        h1 { color: #222; margin-top: 0; font-size: 28px; }
+        .subtitulo { color: #555; font-size: 15px; line-height: 1.5; margin-bottom: 22px; }
+        .btn-logout { background-color: #c62828; color: white; border: none; padding: 9px 16px; border-radius: 5px; cursor: pointer; font-weight: bold; white-space: nowrap; }
         .btn-logout:hover { background-color: #b71c1c; }
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        .tab-btn { padding: 10px 16px; border: 1px solid #2e7d32; background: white; color: #2e7d32; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .tab-btn.active { background: #2e7d32; color: white; }
+
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 25px; }
+        .card-menu { background: #f8faf8; border: 1px solid #d6e2d6; padding: 20px; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s ease; }
+        .card-menu:hover { transform: translateY(-2px); border-color: #2e7d32; box-shadow: 0 4px 10px rgba(46,125,50,0.12); }
+        .card-menu.active { background: #2e7d32; border-color: #2e7d32; color: white; }
+        .card-menu h3 { margin: 0 0 8px 0; font-size: 18px; color: #2e7d32; }
+        .card-menu.active h3 { color: white; }
+        .card-menu p { margin: 0; font-size: 13px; color: #555; line-height: 1.4; }
+        .card-menu.active p { color: #e8f5e9; }
+
+        .modulo-box { border-top: 1px solid #e0e0e0; padding-top: 22px; }
         .section { display: none; }
         .section.active { display: block; }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin-bottom: 15px; }
-        label { display: block; font-size: 12px; color: #555; margin-bottom: 4px; font-weight: bold; }
-        input, select { width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 13px; }
-        .input-date-inline { padding: 5px; font-size: 12px; min-width: 130px; }
-        .btn-save { background-color: #2e7d32; color: white; border: none; padding: 10px 18px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .section h3 { margin-top: 0; color: #2e7d32; font-size: 20px; }
+
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 16px; }
+        label { display: block; font-size: 13px; color: #444; margin-bottom: 5px; font-weight: bold; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 14px; background: white; }
+        .input-date-inline { padding: 6px; font-size: 12px; min-width: 130px; }
+
+        .btn-save { background-color: #2e7d32; color: white; border: none; padding: 10px 18px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 14px; }
         .btn-save:hover { background-color: #1b5e20; }
-        .btn-edit-date { background-color: #1565c0; color: white; border: none; padding: 5px 9px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; }
+        .btn-edit-date { background-color: #1565c0; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; }
         .btn-edit-date:hover { background-color: #0d47a1; }
-        .btn-secondary { background-color: #455a64; color: white; border: none; padding: 9px 14px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 13px; }
+        .btn-secondary { background-color: #455a64; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 13px; }
         .btn-secondary:hover { background-color: #263238; }
         .btn-baja { background-color: #ef6c00; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; }
-        .btn-baja:hover { background-color: #e65100; }
         .btn-reactivar { background-color: #1565c0; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; }
-        .btn-reactivar:hover { background-color: #0d47a1; }
         .badge-activo { color: #2e7d32; font-weight: bold; }
         .badge-inactivo { color: #c62828; font-weight: bold; }
         .msg { margin-top: 10px; font-size: 14px; font-weight: bold; }
         .table-wrap { overflow-x: auto; margin-top: 20px; }
         table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        th, td { border: 1px solid #ddd; padding: 9px; text-align: left; vertical-align: middle; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; vertical-align: middle; }
         th { background-color: #f0f4f0; color: #2e7d32; }
         .report-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 10px; }
+
         @media print {
-            header, .tabs, #formCatequizando, #formAsistencia, #formCatequista, .report-filter-form, .btn-edit-date, .btn-baja, .btn-reactivar {
+            header, .menu-grid, .subtitulo, #formCatequizando, #formAsistencia, #formCatequista, .report-filter-form, .btn-edit-date, .btn-baja, .btn-reactivar {
                 display: none !important;
             }
             .container { box-shadow: none; margin: 0; max-width: 100%; }
@@ -49,219 +61,232 @@
 <body>
 
     <header>
-        <h2>Sistema de Catequesis - Biscucuy</h2>
+        <h2>Sistema de Catequesis</h2>
         <button class="btn-logout" id="btnCerrarSesion">Cerrar Sesión</button>
     </header>
+        <div class="container">
+        <h1>Bienvenido al Panel de Control</h1>
+        <p class="subtitulo">Selecciona una sección para gestionar catequizandos, fechas sacramentales, asistencia y reportes.</p>
 
-    <div class="container">
-        <h1>Panel de Control</h1>
-        <p>Gestiona catequizandos, fechas de comunión y confirmación, asistencia y reportes.</p>
-
-        <div class="tabs">
-            <button class="tab-btn active" data-tab="sec-catequizandos">Catequizandos</button>
-            <button class="tab-btn" data-tab="sec-asistencia">Asistencia</button>
-            <button class="tab-btn" data-tab="sec-catequistas">Catequistas</button>
-            <button class="tab-btn" data-tab="sec-reportes">Reportes</button>
+        <div class="menu-grid">
+            <div class="card-menu active" data-tab="sec-catequizandos">
+                <h3>Catequizandos</h3>
+                <p>Registro, control y fechas de comunión o confirmación.</p>
+            </div>
+            <div class="card-menu" data-tab="sec-asistencia">
+                <h3>Asistencia</h3>
+                <p>Control de asistencia semanal y tema dado.</p>
+            </div>
+            <div class="card-menu" data-tab="sec-catequistas">
+                <h3>Catequistas</h3>
+                <p>Gestión del equipo de guías, altas y bajas.</p>
+            </div>
+            <div class="card-menu" data-tab="sec-reportes">
+                <h3>Reportes</h3>
+                <p>Consulta, CSV e impresión de sacramentos.</p>
+            </div>
         </div>
 
-        <!-- SECCIÓN CATEQUIZANDOS -->
-        <section id="sec-catequizandos" class="section active">
-            <h3>Registrar Catequizando</h3>
-            <form id="formCatequizando">
-                <div class="form-grid">
-                    <div>
-                        <label for="czNombre">Nombre completo</label>
-                        <input type="text" id="czNombre" placeholder="Nombre completo" required>
+        <div class="modulo-box">
+            <!-- SECCIÓN CATEQUIZANDOS -->
+            <section id="sec-catequizandos" class="section active">
+                <h3>Registrar Catequizando</h3>
+                <form id="formCatequizando">
+                    <div class="form-grid">
+                        <div>
+                            <label for="czNombre">Nombre completo</label>
+                            <input type="text" id="czNombre" placeholder="Nombre completo" required>
+                        </div>
+                        <div>
+                            <label for="czFechaNac">Fecha de nacimiento</label>
+                            <input type="date" id="czFechaNac">
+                        </div>
+                        <div>
+                            <label for="czNivel">Nivel / Etapa</label>
+                            <input type="text" id="czNivel" placeholder="Ej. 1er Nivel">
+                        </div>
+                        <div>
+                            <label for="czRepresentante">Representante</label>
+                            <input type="text" id="czRepresentante" placeholder="Nombre del representante">
+                        </div>
+                        <div>
+                            <label for="czTelefono">Teléfono representante</label>
+                            <input type="text" id="czTelefono" placeholder="Teléfono">
+                        </div>
+                        <div>
+                            <label for="czCatequista">Catequista asignado</label>
+                            <select id="czCatequista">
+                                <option value="">-- Catequista asignado --</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="czFechaComunion">Fecha de Comunión</label>
+                            <input type="date" id="czFechaComunion">
+                        </div>
+                        <div>
+                            <label for="czFechaConfirmacion">Fecha de Confirmación</label>
+                            <input type="date" id="czFechaConfirmacion">
+                        </div>
                     </div>
-                    <div>
-                        <label for="czFechaNac">Fecha de nacimiento</label>
-                        <input type="date" id="czFechaNac">
-                    </div>
-                    <div>
-                        <label for="czNivel">Nivel / Etapa</label>
-                        <input type="text" id="czNivel" placeholder="Ej. 1er Nivel">
-                    </div>
-                    <div>
-                        <label for="czRepresentante">Representante</label>
-                        <input type="text" id="czRepresentante" placeholder="Nombre del representante">
-                    </div>
-                    <div>
-                        <label for="czTelefono">Teléfono representante</label>
-                        <input type="text" id="czTelefono" placeholder="Teléfono">
-                    </div>
-                    <div>
-                        <label for="czCatequista">Catequista asignado</label>
-                        <select id="czCatequista">
-                            <option value="">-- Catequista asignado --</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="czFechaComunion">Fecha de Comunión</label>
-                        <input type="date" id="czFechaComunion">
-                    </div>
-                    <div>
-                        <label for="czFechaConfirmacion">Fecha de Confirmación</label>
-                        <input type="date" id="czFechaConfirmacion">
-                    </div>
+                    <button type="submit" class="btn-save">Guardar Catequizando</button>
+                    <div id="msgCatequizando" class="msg"></div>
+                </form>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Nivel</th>
+                                <th>Representante</th>
+                                <th>Catequista</th>
+                                <th>Fecha Comunión</th>
+                                <th>Fecha Confirmación</th>
+                                <th>Guardar Fechas</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaCatequizandos"></tbody>
+                    </table>
                 </div>
-                <button type="submit" class="btn-save">Guardar Catequizando</button>
-                <div id="msgCatequizando" class="msg"></div>
-            </form>
+            </section>
+                        <!-- SECCIÓN ASISTENCIA -->
+            <section id="sec-asistencia" class="section">
+                <h3>Registrar Asistencia</h3>
+                <form id="formAsistencia">
+                    <div class="form-grid">
+                        <div>
+                            <label for="asFecha">Fecha del encuentro</label>
+                            <input type="date" id="asFecha" required>
+                        </div>
+                        <div>
+                            <label for="asTema">Tema dado</label>
+                            <input type="text" id="asTema" placeholder="Tema dado en el encuentro" required>
+                        </div>
+                        <div>
+                            <label for="asCatequizando">Catequizando</label>
+                            <select id="asCatequizando" required>
+                                <option value="">-- Seleccionar catequizando --</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="asEstado">Estado</label>
+                            <select id="asEstado">
+                                <option value="Presente">Presente</option>
+                                <option value="Ausente">Ausente</option>
+                                <option value="Justificado">Justificado</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="asObservacion">Observación</label>
+                            <input type="text" id="asObservacion" placeholder="Opcional">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-save">Guardar Asistencia</button>
+                    <div id="msgAsistencia" class="msg"></div>
+                </form>
 
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Nivel</th>
-                            <th>Representante</th>
-                            <th>Catequista</th>
-                            <th>Fecha Comunión</th>
-                            <th>Fecha Confirmación</th>
-                            <th>Guardar Fechas</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tablaCatequizandos"></tbody>
-                </table>
-            </div>
-                        </section>
-                                <!-- SECCIÓN ASISTENCIA -->
-        <section id="sec-asistencia" class="section">
-            <h3>Registrar Asistencia</h3>
-            <form id="formAsistencia">
-                <div class="form-grid">
-                    <div>
-                        <label for="asFecha">Fecha del encuentro</label>
-                        <input type="date" id="asFecha" required>
-                    </div>
-                    <div>
-                        <label for="asTema">Tema dado</label>
-                        <input type="text" id="asTema" placeholder="Tema dado en el encuentro" required>
-                    </div>
-                    <div>
-                        <label for="asCatequizando">Catequizando</label>
-                        <select id="asCatequizando" required>
-                            <option value="">-- Seleccionar catequizando --</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="asEstado">Estado</label>
-                        <select id="asEstado">
-                            <option value="Presente">Presente</option>
-                            <option value="Ausente">Ausente</option>
-                            <option value="Justificado">Justificado</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label for="asObservacion">Observación</label>
-                        <input type="text" id="asObservacion" placeholder="Opcional">
-                    </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Tema dado</th>
+                                <th>Catequizando</th>
+                                <th>Estado</th>
+                                <th>Observación</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaAsistencia"></tbody>
+                    </table>
                 </div>
-                <button type="submit" class="btn-save">Guardar Asistencia</button>
-                <div id="msgAsistencia" class="msg"></div>
-            </form>
+            </section>
 
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Fecha</th>
-                            <th>Tema dado</th>
-                            <th>Catequizando</th>
-                            <th>Estado</th>
-                            <th>Observación</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tablaAsistencia"></tbody>
-                </table>
-            </div>
-        </section>
+            <!-- SECCIÓN CATEQUISTAS -->
+            <section id="sec-catequistas" class="section">
+                <h3>Registrar Catequista</h3>
+                <form id="formCatequista">
+                    <div class="form-grid">
+                        <div>
+                            <label for="cqNombre">Nombre completo</label>
+                            <input type="text" id="cqNombre" placeholder="Nombre completo" required>
+                        </div>
+                        <div>
+                            <label for="cqTelefono">Teléfono</label>
+                            <input type="text" id="cqTelefono" placeholder="Teléfono">
+                        </div>
+                        <div>
+                            <label for="cqNivel">Nivel / Grupo</label>
+                            <input type="text" id="cqNivel" placeholder="Nivel / Grupo">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-save">Guardar Catequista</button>
+                    <div id="msgCatequista" class="msg"></div>
+                </form>
 
-        <!-- SECCIÓN CATEQUISTAS -->
-        <section id="sec-catequistas" class="section">
-            <h3>Registrar Catequista</h3>
-            <form id="formCatequista">
-                <div class="form-grid">
-                    <div>
-                        <label for="cqNombre">Nombre completo</label>
-                        <input type="text" id="cqNombre" placeholder="Nombre completo" required>
-                    </div>
-                    <div>
-                        <label for="cqTelefono">Teléfono</label>
-                        <input type="text" id="cqTelefono" placeholder="Teléfono">
-                    </div>
-                    <div>
-                        <label for="cqNivel">Nivel / Grupo</label>
-                        <input type="text" id="cqNivel" placeholder="Nivel / Grupo">
-                    </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Teléfono</th>
+                                <th>Nivel</th>
+                                <th>Estado</th>
+                                <th>Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaCatequistas"></tbody>
+                    </table>
                 </div>
-                <button type="submit" class="btn-save">Guardar Catequista</button>
-                <div id="msgCatequista" class="msg"></div>
-            </form>
+            </section>
 
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Teléfono</th>
-                            <th>Nivel</th>
-                            <th>Estado</th>
-                            <th>Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tablaCatequistas"></tbody>
-                </table>
-            </div>
-        </section>
-
-        <!-- SECCIÓN REPORTES -->
-        <section id="sec-reportes" class="section">
-            <h3>Reportes de Comunión y Confirmación</h3>
-            <div class="report-filter-form">
-                <div class="form-grid">
-                    <div>
-                        <label for="repTipoEvento">Tipo de evento</label>
-                        <select id="repTipoEvento">
-                            <option value="todos">Con fecha de Comunión o Confirmación</option>
-                            <option value="comunion">Solo Primera Comunión</option>
-                            <option value="confirmacion">Solo Confirmación</option>
-                        </select>
+            <!-- SECCIÓN REPORTES -->
+            <section id="sec-reportes" class="section">
+                <h3>Reportes de Comunión y Confirmación</h3>
+                <div class="report-filter-form">
+                    <div class="form-grid">
+                        <div>
+                            <label for="repTipoEvento">Tipo de evento</label>
+                            <select id="repTipoEvento">
+                                <option value="todos">Con fecha de Comunión o Confirmación</option>
+                                <option value="comunion">Solo Primera Comunión</option>
+                                <option value="confirmacion">Solo Confirmación</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="repDesde">Desde (fecha del evento)</label>
+                            <input type="date" id="repDesde">
+                        </div>
+                        <div>
+                            <label for="repHasta">Hasta (fecha del evento)</label>
+                            <input type="date" id="repHasta">
+                        </div>
                     </div>
-                    <div>
-                        <label for="repDesde">Desde (fecha del evento)</label>
-                        <input type="date" id="repDesde">
+                    <div class="report-actions">
+                        <button type="button" class="btn-save" id="btnGenerarReporte">Generar Reporte</button>
+                        <button type="button" class="btn-secondary" id="btnExportarCsv">Descargar CSV</button>
+                        <button type="button" class="btn-secondary" id="btnImprimirReporte">Imprimir / Guardar PDF</button>
                     </div>
-                    <div>
-                        <label for="repHasta">Hasta (fecha del evento)</label>
-                        <input type="date" id="repHasta">
-                    </div>
+                    <div id="msgReporte" class="msg"></div>
                 </div>
-                <div class="report-actions">
-                    <button type="button" class="btn-save" id="btnGenerarReporte">Generar Reporte</button>
-                    <button type="button" class="btn-secondary" id="btnExportarCsv">Descargar CSV</button>
-                    <button type="button" class="btn-secondary" id="btnImprimirReporte">Imprimir / Guardar PDF</button>
-                </div>
-                <div id="msgReporte" class="msg"></div>
-            </div>
 
-            <div class="table-wrap">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Catequizando</th>
-                            <th>Nivel</th>
-                            <th>Representante</th>
-                            <th>Fecha Comunión</th>
-                            <th>Fecha Confirmación</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tablaReporte"></tbody>
-                </table>
-            </div>
-        </section>
-                                </div>
-               <script type="module">
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Catequizando</th>
+                                <th>Nivel</th>
+                                <th>Representante</th>
+                                <th>Fecha Comunión</th>
+                                <th>Fecha Confirmación</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaReporte"></tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+        </div>
+            <script type="module">
         import { supabase } from './supabaseClient.js'
 
         let catequizandosCache = []
@@ -281,15 +306,15 @@
             window.location.href = './index.html'
         })
 
-        const tabBtns = document.querySelectorAll('.tab-btn')
+        const cardsMenu = document.querySelectorAll('.card-menu')
         const sections = document.querySelectorAll('.section')
-        tabBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                tabBtns.forEach(b => b.classList.remove('active'))
+        cardsMenu.forEach(card => {
+            card.addEventListener('click', () => {
+                cardsMenu.forEach(c => c.classList.remove('active'))
                 sections.forEach(s => s.classList.remove('active'))
-                btn.classList.add('active')
-                document.getElementById(btn.dataset.tab).classList.add('active')
-                if (btn.dataset.tab === 'sec-reportes') {
+                card.classList.add('active')
+                document.getElementById(card.dataset.tab).classList.add('active')
+                if (card.dataset.tab === 'sec-reportes') {
                     generarReporte()
                 }
             })
@@ -427,8 +452,7 @@
                 selectAs.innerHTML += `<option value="${cz.id}">${cz.nombre_completo}</option>`
             })
         }
-
-        async function cargarAsistencia() {
+                        async function cargarAsistencia() {
             const { data, error } = await supabase
                 .from('asistencia')
                 .select('*, catequizandos(nombre_completo)')
@@ -629,4 +653,3 @@
 
 </body>
 </html>
-    
