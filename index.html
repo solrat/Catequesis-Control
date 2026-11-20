@@ -5,20 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Acceso · Sistema de Catequesis</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #f4f6f9; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; box-sizing: border-box; }
-        .login-card { background: white; width: 100%; max-width: 440px; padding: 28px 24px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.1); }
-        .logos-institucionales { display: flex; justify-content: center; align-items: center; gap: 14px; margin-bottom: 14px; flex-wrap: wrap; }
-        .logo-item { display: none; flex-direction: column; align-items: center; gap: 4px; background: #f8faf8; padding: 8px 10px; border-radius: 8px; border: 1px solid #d6e2d6; min-width: 110px; }
-        .logo-item img { max-height: 72px; max-width: 120px; object-fit: contain; }
-        .logo-item span { font-size: 10px; color: #2e7d32; font-weight: bold; text-transform: uppercase; letter-spacing: 0.4px; }
-        .diocesis-tag { margin: 0 0 4px 0; color: #1b5e20; font-size: 12px; font-weight: bold; text-align: center; text-transform: uppercase; letter-spacing: 0.5px; min-height: 14px; }
-        h2 { margin: 0 0 4px 0; color: #2e7d32; font-size: 21px; text-align: center; line-height: 1.25; }
-        .sub-parroquia { margin: 0 0 18px 0; color: #666; font-size: 13px; text-align: center; }
-        label { display: block; font-size: 13px; font-weight: bold; color: #444; margin-bottom: 5px; }
-        input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; margin-bottom: 14px; font-size: 14px; box-sizing: border-box; }
-        button { width: 100%; background: #2e7d32; color: white; border: none; padding: 11px; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; }
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body { max-width: 100%; overflow-x: hidden; }
+        body { font-family: Arial, sans-serif; background: #f4f6f9; margin: 0; padding: 12px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .login-card { background: white; width: 100%; max-width: 400px; padding: 20px 16px; border-radius: 10px; box-shadow: 0 4px 14px rgba(0,0,0,0.1); overflow-wrap: break-word; }
+        .logos-institucionales { display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+        /* Reducido aproximadamente al 25% del tamaño anterior */
+        .logo-item { display: none; flex-direction: column; align-items: center; gap: 2px; background: #f8faf8; padding: 4px 6px; border-radius: 6px; border: 1px solid #d6e2d6; max-width: 96px; }
+        .logo-item img { max-height: 18px; max-width: 30px; width: auto; height: auto; object-fit: contain; }
+        .logo-item span { font-size: 8px; color: #2e7d32; font-weight: bold; text-transform: uppercase; letter-spacing: 0.2px; text-align: center; line-height: 1.15; word-break: break-word; }
+        .diocesis-tag { margin: 0 0 4px 0; color: #1b5e20; font-size: 11px; font-weight: bold; text-align: center; text-transform: uppercase; letter-spacing: 0.4px; min-height: 14px; }
+        h2 { margin: 0 0 4px 0; color: #2e7d32; font-size: 18px; text-align: center; line-height: 1.25; }
+        .sub-parroquia { margin: 0 0 16px 0; color: #666; font-size: 12px; text-align: center; line-height: 1.35; }
+        label { display: block; font-size: 12px; font-weight: bold; color: #444; margin-bottom: 4px; }
+        input { width: 100%; max-width: 100%; padding: 9px 10px; border: 1px solid #ccc; border-radius: 6px; margin-bottom: 12px; font-size: 14px; }
+        button { width: 100%; max-width: 100%; background: #2e7d32; color: white; border: none; padding: 10px; border-radius: 6px; font-size: 14px; font-weight: bold; cursor: pointer; }
         button:hover { background: #256428; }
-        .msg { margin-top: 12px; font-size: 13px; text-align: center; color: #c62828; }
+        .msg { margin-top: 10px; font-size: 12px; text-align: center; color: #c62828; }
+        @media (max-width: 420px) {
+            body { padding: 8px; }
+            .login-card { padding: 16px 12px; border-radius: 8px; }
+            h2 { font-size: 17px; }
+        }
     </style>
 </head>
 <body>
@@ -84,7 +92,6 @@
                     document.getElementById('subtituloLoginParroquia').textContent = `${localidad} · Ingresa con tu usuario y contraseña`
                 }
 
-                // Cada parroquia puede tener sus propios logos guardados en BD o localStorage
                 const urlDiocesis = data?.logo_diocesis_url || localStorage.getItem('logo_diocesis') || ''
                 const urlParroquia = data?.logo_parroquia_url || localStorage.getItem('logo_parroquia_1') || ''
                 const urlPastoral = data?.logo_pastoral_url || data?.logo_secundario_url || localStorage.getItem('logo_parroquia_2') || ''
@@ -92,9 +99,7 @@
                 mostrarLogoSiCarga(document.getElementById('logoDiocesis'), document.getElementById('boxLogoDiocesis'), urlDiocesis)
                 mostrarLogoSiCarga(document.getElementById('logoParroquia'), document.getElementById('boxLogoParroquia'), urlParroquia)
                 mostrarLogoSiCarga(document.getElementById('logoPastoral'), document.getElementById('boxLogoPastoral'), urlPastoral)
-            } catch (_) {
-                // Si aún no hay configuración guardada, conserva los textos base
-            }
+            } catch (_) {}
         }
 
         cargarPersonalizacionLogin()
