@@ -5,53 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Catequesis</title>
     <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        html, body { max-width: 100%; overflow-x: hidden; }
         body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 0; color: #333; }
-        header { background-color: #2e7d32; color: white; padding: 15px 25px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-        .header-left { display: flex; align-items: center; gap: 12px; }
-        .header-logo { max-height: 46px; max-width: 68px; object-fit: contain; border-radius: 6px; background: #fff; padding: 2px; display: none; }
-        header h2 { margin: 0; font-size: 20px; line-height: 1.25; }
-        header small { display: block; font-size: 12px; color: #e8f5e9; margin-top: 2px; }
-        .rol-badge { display: inline-block; background: #e8f5e9; color: #1b5e20; font-weight: bold; font-size: 12px; padding: 4px 10px; border-radius: 20px; margin-bottom: 12px; }
-        .container { max-width: 1140px; margin: 22px auto; background: white; padding: 26px 22px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); box-sizing: border-box; }
-        h1 { color: #222; margin: 0 0 8px 0; font-size: 26px; }
-        .subtitulo { color: #555; font-size: 15px; line-height: 1.5; margin-bottom: 18px; }
-        .btn-logout { background-color: #c62828; color: white; border: none; padding: 9px 16px; border-radius: 5px; cursor: pointer; font-weight: bold; white-space: nowrap; }
-        .alertas-box { background: #fff8e1; border-left: 4px solid #f9a825; padding: 12px 16px; border-radius: 6px; margin-bottom: 18px; display: none; }
-        .alertas-box h4 { margin: 0 0 6px 0; color: #8d6e00; font-size: 14px; }
-        .alertas-box ul { margin: 0; padding-left: 18px; font-size: 13px; color: #444; }
-        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 22px; }
-        .card-menu { background: #f8faf8; border: 1px solid #d6e2d6; padding: 16px; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s ease; }
+        header { background-color: #2e7d32; color: white; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; max-width: 100%; }
+        .header-left { display: flex; align-items: center; gap: 6px; min-width: 0; flex: 1 1 auto; flex-wrap: wrap; }
+        .header-logo { max-height: 12px; max-width: 17px; width: auto; height: auto; object-fit: contain; border-radius: 3px; background: #fff; padding: 1px; display: none; }
+        header h2 { margin: 0; font-size: 16px; line-height: 1.25; word-break: break-word; }
+        header small { display: block; font-size: 11px; color: #e8f5e9; margin-top: 2px; word-break: break-word; }
+        .rol-badge { display: inline-block; background: #e8f5e9; color: #1b5e20; font-weight: bold; font-size: 11px; padding: 4px 10px; border-radius: 20px; margin-bottom: 10px; max-width: 100%; }
+        .container { width: 100%; max-width: 1140px; margin: 10px auto; background: white; padding: 14px 12px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        h1 { color: #222; margin: 0 0 6px 0; font-size: 20px; line-height: 1.25; }
+        .subtitulo { color: #555; font-size: 13px; line-height: 1.45; margin-bottom: 14px; }
+        .btn-logout { background-color: #c62828; color: white; border: none; padding: 7px 11px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 12px; white-space: nowrap; }
+        .alertas-box { background: #fff8e1; border-left: 4px solid #f9a825; padding: 10px 12px; border-radius: 6px; margin-bottom: 14px; display: none; }
+        .alertas-box h4 { margin: 0 0 6px 0; color: #8d6e00; font-size: 13px; }
+        .alertas-box ul { margin: 0; padding-left: 16px; font-size: 12px; color: #444; }
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 10px; margin-bottom: 16px; }
+        .card-menu { background: #f8faf8; border: 1px solid #d6e2d6; padding: 12px 10px; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s ease; min-width: 0; }
         .card-menu.active { background: #2e7d32; border-color: #2e7d32; color: white; }
-        .card-menu h3 { margin: 0 0 6px 0; font-size: 17px; color: #2e7d32; }
+        .card-menu h3 { margin: 0 0 4px 0; font-size: 14px; color: #2e7d32; }
         .card-menu.active h3 { color: white; }
-        .card-menu p { margin: 0; font-size: 13px; color: #555; line-height: 1.4; }
+        .card-menu p { margin: 0; font-size: 11px; color: #555; line-height: 1.35; }
         .card-menu.active p { color: #e8f5e9; }
-                .modulo-box { border-top: 1px solid #e0e0e0; padding-top: 20px; }
+                .modulo-box { border-top: 1px solid #e0e0e0; padding-top: 16px; }
         .section { display: none; }
         .section.active { display: block; }
-        .section h3 { margin-top: 0; color: #2e7d32; font-size: 20px; }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 14px; }
-        .campo-box { display: flex; flex-direction: column; gap: 4px; }
+        .section h3 { margin-top: 0; color: #2e7d32; font-size: 18px; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; margin-bottom: 12px; }
+        .campo-box { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
         .campo-box label { font-size: 12px; font-weight: bold; color: #444; }
-        input, select, textarea { padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-family: inherit; font-size: 13px; box-sizing: border-box; width: 100%; }
+        input, select, textarea { padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-family: inherit; font-size: 13px; width: 100%; max-width: 100%; }
         input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
-        .btn-verde { background: #2e7d32; color: white; border: none; padding: 9px 14px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .btn-verde { background: #2e7d32; color: white; border: none; padding: 9px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 13px; max-width: 100%; }
         .btn-azul { background: #1565c0; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
         .btn-naranja { background: #ef6c00; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
         .btn-morado { background: #6a1b9a; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
         .btn-gris { background: #546e7a; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
         .btn-rojo { background: #c62828; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
-        .tabla-wrap { overflow-x: auto; margin-top: 12px; }
+        .tabla-wrap { width: 100%; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 10px; }
         table { width: 100%; border-collapse: collapse; font-size: 13px; }
         th { background: #eef3ee; text-align: left; padding: 8px; border-bottom: 1px solid #ccc; }
         td { padding: 8px; border-bottom: 1px solid #eee; vertical-align: top; }
-        .metricas-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-bottom: 14px; }
-        .metrica-card { background: #f4f8f4; border: 1px solid #cfe0cf; padding: 12px; border-radius: 6px; }
-        .metrica-card strong { display: block; font-size: 20px; color: #1b5e20; }
-        .panel-detalle { display:none; background:#f9fbe7; border:1px solid #dce775; padding:14px; border-radius:6px; margin-bottom:14px; }
+        .metricas-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 12px; }
+        .metrica-card { background: #f4f8f4; border: 1px solid #cfe0cf; padding: 10px; border-radius: 6px; }
+        .metrica-card strong { display: block; font-size: 18px; color: #1b5e20; }
+        .panel-detalle { display:none; background:#f9fbe7; border:1px solid #dce775; padding:12px; border-radius:6px; margin-bottom:12px; }
         .tag-ok { display:inline-block; background:#e8f5e9; color:#1b5e20; padding:2px 7px; border-radius:12px; font-size:11px; font-weight:bold; }
         .tag-pend { display:inline-block; background:#fff3e0; color:#e65100; padding:2px 7px; border-radius:12px; font-size:11px; font-weight:bold; }
         .oculto-por-rol { display: none !important; }
+        @media (max-width: 600px) {
+            header { padding: 8px 10px; }
+            header h2 { font-size: 14px; }
+            .container { margin: 6px auto; padding: 12px 10px; border-radius: 6px; }
+            h1 { font-size: 18px; }
+            .menu-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .form-grid { grid-template-columns: 1fr; }
+            table { font-size: 12px; }
+            th, td { padding: 6px; }
+        }
         @media print {
             header, .menu-grid, .alertas-box, .form-grid, button, .panel-detalle { display: none !important; }
             .container { box-shadow: none; margin: 0; max-width: 100%; }
@@ -96,12 +108,16 @@
             </div>
             <div class="card-menu" data-tab="sec-formacion">
                 <h3>Talleres, Quiz y Reportes</h3>
-                <p>Temas de talleres, asistencia de catequistas, reportes y parroquia.</p>
+                <p>Temas de talleres, asistencia de catequistas y reportes.</p>
+            </div>
+            <div class="card-menu" id="cardPersonalizacion" data-tab="sec-personalizacion">
+                <h3>Personalización</h3>
+                <p>Diócesis, parroquia, logos y parámetros del sistema.</p>
             </div>
         </div>
 
         <div class="modulo-box">
-                      <section id="sec-catequizandos" class="section active">
+                       <section id="sec-catequizandos" class="section active">
                 <h3>Catequizandos</h3>
 
                 <div class="form-grid">
@@ -177,8 +193,8 @@
                         <tbody id="tbodyCatequizandos"></tbody>
                     </table>
                 </div>
-                      </section>
-                       <section id="sec-asistencia" class="section">
+                       </section>
+                        <section id="sec-asistencia" class="section">
                 <h3>Asistencia de Catequizandos (Lista Tildable)</h3>
 
                 <div class="metricas-grid">
@@ -333,8 +349,8 @@
                     </table>
                 </div>
             </section>
-                        <section id="sec-formacion" class="section">
-                <h3>Talleres, Quiz, Reportes y Configuración</h3>
+                       <section id="sec-formacion" class="section">
+                <h3>Talleres, Quiz y Reportes</h3>
 
                 <div id="boxMiProgresoTalleres" style="background:#f1f8e9; border:1px solid #c5e1a5; padding:12px; border-radius:6px; margin-bottom:16px;">
                     <strong>Estado de tus talleres de formación:</strong>
@@ -408,9 +424,11 @@
                     <button class="btn-azul" id="btnImprimirReporte" type="button">Imprimir</button>
                 </div>
                 <div id="salidaReporte" class="tabla-wrap"></div>
+            </section>
 
-                <div id="boxConfigParroquia" style="display:none; margin-top:22px; padding-top:16px; border-top:1px solid #e0e0e0;">
-                    <h4>Personalización de Diócesis, Parroquia y Logos</h4>
+            <section id="sec-personalizacion" class="section">
+                <h3>Personalización de Diócesis, Parroquia y Logos</h3>
+                <div id="boxConfigParroquia">
                     <div class="form-grid">
                         <div class="campo-box">
                             <label for="cfgNombreDiocesis">Nombre de la diócesis</label>
@@ -456,7 +474,7 @@
             </section>
         </div>
         </div>
-           <script type="module">
+        <script type="module">
         import { supabase } from './supabaseClient.js'
 
         window.appState = {
@@ -547,7 +565,7 @@
             const logo2 = localStorage.getItem('logo_parroquia_2') || ''
             aplicarLogosEnPantalla(logoDiocesis, logo1, logo2)
         }
-                async function cargarAusenciasConteo() {
+                  async function cargarAusenciasConteo() {
             const { data } = await supabase.from('asistencia').select('*')
             asistenciaCache = data || []
             ausenciasPorAlumno = {}
@@ -676,7 +694,7 @@
             document.getElementById(id)?.addEventListener('input', renderizarCatequizandos)
             document.getElementById(id)?.addEventListener('change', renderizarCatequizandos)
         })
-                      document.getElementById('btnGuardarCatequizando')?.addEventListener('click', async () => {
+              document.getElementById('btnGuardarCatequizando')?.addEventListener('click', async () => {
             const nombre = document.getElementById('catNombre').value.trim()
             const nac = document.getElementById('catNacimiento').value
             const tel = document.getElementById('catTelefono').value.trim()
@@ -801,8 +819,8 @@
             if (!causa || !causa.trim()) return alert('Debes indicar una causa para retirar al catequizando.')
             await supabase.from('catequizandos').update({ retirado: true, fecha_retiro: new Date().toISOString().slice(0, 10), causa_retiro: causa.trim(), estado_seguimiento: 'retirado' }).eq('id', id)
             cargarCatequizandos()
-               }
-                      function renderizarListaTomaAsistencia() {
+            }
+                    function renderizarListaTomaAsistencia() {
             const tbody = document.getElementById('tbodyListaTomaAsistencia')
             if (!tbody) return
             const txt = (document.getElementById('filtroAsisTexto')?.value || '').trim().toLowerCase()
@@ -896,8 +914,8 @@
             if (!confirm('¿Confirmas quitar el rol de coordinador a este usuario?')) return
             await supabase.from('administradores').delete().eq('id', id)
             cargarCatequistas()
-               }
-                      async function cargarCatequistas() {
+            }
+                   async function cargarCatequistas() {
             const { data: catqs } = await supabase.from('catequistas').select('*').order('nombre_completo', { ascending: true })
             catequistasCache = catqs || []
 
@@ -1150,8 +1168,8 @@
         window.reintegrarCatequista = async (id, cicloActual) => {
             await supabase.from('catequistas').update({ activo: true, ciclo_actual: Number(cicloActual || 1) + 1 }).eq('id', id)
             cargarCatequistas()
-               }
-                     async function cargarFormacion() {
+            }
+                  async function cargarFormacion() {
             const { data: talleres } = await supabase.from('talleres').select('*').order('fecha', { ascending: true })
             talleresCache = talleres || []
 
@@ -1423,9 +1441,18 @@
                     perfilActual = catqPerfil ? { ...catqPerfil, rol: 'catequista' } : { nombre_completo: session.user.email, rol: 'catequista', ciclo_actual: 1 }
                 }
 
+                const rolLimpio = String(perfilActual.rol || '').trim().toLowerCase()
+                if (rolLimpio.includes('parroco') || rolLimpio.includes('párroco')) {
+                    perfilActual.rol = 'parroco'
+                } else if (rolLimpio.includes('master') || rolLimpio.includes('coord')) {
+                    perfilActual.rol = 'master'
+                } else {
+                    perfilActual.rol = 'catequista'
+                }
+
                 window.appState.perfilActual = perfilActual
                 const etiquetasRol = { parroco: 'Párroco', master: 'Coordinador General (Master)', catequista: 'Catequista' }
-                if (badge) badge.textContent = `${etiquetasRol[perfilActual.rol] || 'Catequista'} · ${perfilActual.nombre_completo}`
+                if (badge) badge.textContent = `${etiquetasRol[perfilActual.rol] || perfilActual.rol} · ${perfilActual.nombre_completo}`
 
                 document.getElementById('textoBienvenida').textContent =
                     perfilActual.rol === 'parroco'
@@ -1436,10 +1463,8 @@
 
                 if (perfilActual.rol === 'catequista') {
                     document.getElementById('cardCatequistas')?.classList.add('oculto-por-rol')
+                    document.getElementById('cardPersonalizacion')?.classList.add('oculto-por-rol')
                     document.getElementById('boxFormCrearTaller')?.classList.add('oculto-por-rol')
-                } else {
-                    const boxCfg = document.getElementById('boxConfigParroquia')
-                    if (boxCfg) boxCfg.style.display = 'block'
                 }
 
                 await cargarCatequizandos().catch(() => {})
