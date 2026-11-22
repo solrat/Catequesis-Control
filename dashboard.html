@@ -35,6 +35,16 @@
             font-weight: bold;
         }
         .container { max-width: 1200px; margin: 20px auto; padding: 0 16px; }
+        .banner-bienvenida {
+            background: #fff;
+            border: 1px solid #d7e2d7;
+            border-left: 5px solid #2e7d32;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 14px;
+        }
+        .banner-bienvenida h2 { margin: 0 0 4px 0; font-size: 18px; color: #1b5e20; }
+        .banner-bienvenida p { margin: 0; font-size: 13px; color: #555; }
         .alerta-banner {
             display: none;
             background: #fff8e1;
@@ -101,7 +111,7 @@
         .metrica-card span { font-size: 12px; color: #555; }
         .panel-detalle { display: none; border: 1px solid #ccc; border-radius: 6px; padding: 12px; margin-bottom: 14px; background: #fafafa; }
         @media print {
-            header, .menu-grid, .btn-logout, .no-print { display: none !important; }
+            header, .banner-bienvenida, .menu-grid, .btn-logout, .no-print { display: none !important; }
             .modulo-box { border: none; padding: 0; }
         }
     </style>
@@ -117,6 +127,11 @@
 </header>
 
 <div class="container">
+    <div id="bannerBienvenidaCatequista" class="banner-bienvenida">
+        <h2 id="tituloBienvenidaUsuario">Bienvenido/a</h2>
+        <p id="subtituloBienvenidaUsuario">Cargando datos del catequista...</p>
+    </div>
+
     <div id="alertaPanel" class="alerta-banner"></div>
 
     <div class="menu-grid">
@@ -128,7 +143,7 @@
             <h3>Asistencia</h3>
             <p>Control grupal por tema y seguimiento.</p>
         </div>
-        <div class="card-menu" data-tab="sec-catequistas">
+        <div class="card-menu" id="cardCatequistas" data-tab="sec-catequistas">
             <h3>Catequistas</h3>
             <p>Equipo de catequistas, horarios y estado.</p>
         </div>
@@ -139,7 +154,7 @@
     </div>
 
     <div class="modulo-box">
-            <section id="sec-catequizandos" class="section active">
+              <section id="sec-catequizandos" class="section active">
             <h3>Catequizandos — Boleta de Inscripción</h3>
 
             <div style="background:#f9fbf9; border:1px solid #d7e2d7; border-radius:8px; padding:12px; margin-bottom:14px;">
@@ -227,7 +242,7 @@
                     </div>
                 </div>
             </div>
-                       <div class="form-grid">
+                     <div class="form-grid">
                 <input type="text" id="filtroCatTexto" placeholder="Buscar por nombre, cédula, representante o dirección...">
                 <select id="filtroCatSacramento">
                     <option value="todos">Todos los sacramentos (Comunión / Confirmación)</option>
@@ -286,8 +301,8 @@
                     <tbody id="tbodyCatequizandos"></tbody>
                 </table>
             </div>
-            </section>
-                <section id="sec-asistencia" class="section">
+              </section>
+              <section id="sec-asistencia" class="section">
             <h3>Asistencia de Catequizandos</h3>
             <div class="metricas-grid">
                 <div class="metrica-card"><strong id="metMesesClase">0</strong><span>Meses de clase impartidos</span></div>
@@ -430,8 +445,8 @@
                     <tbody id="tbodyCatequistas"></tbody>
                 </table>
             </div>
-                            </section>
-            <section id="sec-formacion" class="section">
+        </section>
+               <section id="sec-formacion" class="section">
             <h3>Talleres, Quiz, Reportes y Configuración</h3>
             <div class="form-grid">
                 <div class="campo-box"><label for="tallerTitulo">Título del taller</label><input type="text" id="tallerTitulo" placeholder="Título"></div>
@@ -455,7 +470,7 @@
             <h4>Reportes Sacramentales y del Sistema</h4>
             <div class="form-grid no-print">
                 <div class="campo-box">
-                    <label for="filtroReporteSacramento">Sacramento (solo Comunión o Confirmación)</label>
+                    <label for="filtroReporteSacramento">Sacramento (Comunión / Confirmación)</label>
                     <select id="filtroReporteSacramento">
                         <option value="todos">Comunión y Confirmación</option>
                         <option value="Comunión">Solo Comunión</option>
@@ -501,7 +516,7 @@
         </section>
     </div>
 </div>
-<script type="module">
+  <script type="module">
     import { supabase } from './supabaseClient.js';
 
     window.appState = {
@@ -519,7 +534,6 @@
     let catequizandosCache = [];
     let catequistasCache = [];
     let asistenciaCache = [];
-    let loteCierrePendiente = null;
     let ultimoReporteFilas = [];
 
     function calcularEdad(fechaNacStr) {
@@ -534,6 +548,18 @@
 
     function normalizarSacramento(valor) {
         return valor === 'Confirmación' ? 'Confirmación' : 'Comunión';
+    }
+
+    function actualizarBannerBienvenida(session) {
+        const p = window.appState.perfilActual || {};
+        const nombre = p.nombre_completo || p.nombre || p.usuario || session?.user?.email || 'Catequista';
+        const sector = p.sector || '';
+        const rol = window.appState.rolActual || 'catequista';
+
+        document.getElementById('tituloBienvenidaUsuario').textContent = `Bienvenido/a, ${nombre}`;
+        document.getElementById('subtituloBienvenidaUsuario').textContent = sector
+            ? `Perfil activo (${rol}) · Sector: ${sector}`
+            : `Perfil activo (${rol})`;
     }
 
     async function verificarSesionYPerfil() {
@@ -560,6 +586,8 @@
         }
 
         document.getElementById('badgeRolUsuario').textContent = `Rol: ${window.appState.rolActual}`;
+        actualizarBannerBienvenida(session);
+
         const esParrocoOMaster = ['parroco', 'master'].includes(window.appState.rolActual);
         document.getElementById('boxConfigParroquia').style.display = esParrocoOMaster ? 'block' : 'none';
         document.getElementById('boxRolNuevoEquipo').style.display = window.appState.rolActual === 'parroco' ? 'flex' : 'none';
@@ -709,7 +737,7 @@
         document.getElementById(id).addEventListener('input', renderizarCatequizandos);
         document.getElementById(id).addEventListener('change', renderizarCatequizandos);
     });
-        window.cerrarEtapaAlumno = async (id) => {
+         window.cerrarEtapaAlumno = async (id) => {
         const alumno = catequizandosCache.find(a => a.id === id);
         if (!alumno) return;
         const fechaCierre = new Date().toISOString().slice(0, 10);
@@ -752,8 +780,8 @@
         catequizandosCache = data || [];
         renderizarCatequizandos();
         renderizarListaTomaAsistencia();
-    }
-        document.getElementById('asisFecha').valueAsDate = new Date();
+                                               }
+                           document.getElementById('asisFecha').valueAsDate = new Date();
 
     function renderizarListaTomaAsistencia() {
         const tbody = document.getElementById('tbodyListaTomaAsistencia');
@@ -845,7 +873,8 @@
             `;
         });
                 }
-        function obtenerFilasReporte() {
+
+          function obtenerFilasReporte() {
         const sacFiltro = document.getElementById('filtroReporteSacramento').value;
         const desde = document.getElementById('repDesde').value;
         const hasta = document.getElementById('repHasta').value;
