@@ -3,145 +3,304 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Catequesis</title>
+    <title>Panel de Control - Sistema de Catequesis</title>
     <style>
-        *, *::before, *::after { box-sizing: border-box; }
-        html, body { max-width: 100%; overflow-x: hidden; }
-        body { font-family: Arial, sans-serif; background-color: #f4f6f9; margin: 0; padding: 0; color: #333; }
-        header { background-color: #2e7d32; color: white; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; max-width: 100%; }
-        .header-left { display: flex; align-items: center; gap: 6px; min-width: 0; flex: 1 1 auto; flex-wrap: wrap; }
-        .header-logo { max-height: 12px; max-width: 17px; width: auto; height: auto; object-fit: contain; border-radius: 3px; background: #fff; padding: 1px; display: none; }
-        header h2 { margin: 0; font-size: 16px; line-height: 1.25; word-break: break-word; }
-        header small { display: block; font-size: 11px; color: #e8f5e9; margin-top: 2px; word-break: break-word; }
-        .rol-badge { display: inline-block; background: #e8f5e9; color: #1b5e20; font-weight: bold; font-size: 11px; padding: 4px 10px; border-radius: 20px; margin-bottom: 10px; max-width: 100%; }
-        .container { width: 100%; max-width: 1140px; margin: 10px auto; background: white; padding: 14px 12px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
-        h1 { color: #222; margin: 0 0 6px 0; font-size: 20px; line-height: 1.25; }
-        .subtitulo { color: #555; font-size: 13px; line-height: 1.45; margin-bottom: 14px; }
-        .btn-logout { background-color: #c62828; color: white; border: none; padding: 7px 11px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 12px; white-space: nowrap; }
-        .alertas-box { background: #fff8e1; border-left: 4px solid #f9a825; padding: 10px 12px; border-radius: 6px; margin-bottom: 14px; display: none; }
-        .alertas-box h4 { margin: 0 0 6px 0; color: #8d6e00; font-size: 13px; }
-        .alertas-box ul { margin: 0; padding-left: 16px; font-size: 12px; color: #444; }
-        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 10px; margin-bottom: 16px; }
-        .card-menu { background: #f8faf8; border: 1px solid #d6e2d6; padding: 12px 10px; border-radius: 8px; text-align: center; cursor: pointer; transition: all 0.2s ease; min-width: 0; }
-        .card-menu.active { background: #2e7d32; border-color: #2e7d32; color: white; }
-        .card-menu h3 { margin: 0 0 4px 0; font-size: 14px; color: #2e7d32; }
-        .card-menu.active h3 { color: white; }
-        .card-menu p { margin: 0; font-size: 11px; color: #555; line-height: 1.35; }
-        .card-menu.active p { color: #e8f5e9; }
-                .modulo-box { border-top: 1px solid #e0e0e0; padding-top: 16px; }
+        * { box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { margin: 0; background: #f4f6f4; color: #222; }
+        header {
+            background: #1b5e20;
+            color: #fff;
+            padding: 14px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .header-info { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .badge-rol {
+            background: rgba(255,255,255,0.18);
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .btn-logout {
+            background: #c62828;
+            color: #fff;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .container { max-width: 1200px; margin: 20px auto; padding: 0 16px; }
+        .alerta-banner {
+            display: none;
+            background: #fff8e1;
+            border: 1px solid #ffd54f;
+            color: #5d4037;
+            padding: 10px 14px;
+            border-radius: 6px;
+            margin-bottom: 14px;
+            font-size: 13px;
+        }
+                .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin: 16px 0;
+        }
+        .card-menu {
+            background: #fff;
+            border: 1px solid #d7e2d7;
+            border-radius: 8px;
+            padding: 14px;
+            cursor: pointer;
+            transition: transform 0.15s, border-color 0.15s;
+        }
+        .card-menu:hover { transform: translateY(-1px); border-color: #2e7d32; }
+        .card-menu.active { border: 2px solid #2e7d32; background: #f1f8e9; }
+        .card-menu h3 { margin: 0 0 4px 0; font-size: 16px; color: #1b5e20; }
+        .card-menu p { margin: 0; font-size: 12px; color: #555; }
+        .modulo-box {
+            background: #fff;
+            border: 1px solid #dce5dc;
+            border-radius: 8px;
+            padding: 16px;
+        }
         .section { display: none; }
         .section.active { display: block; }
-        .section h3 { margin-top: 0; color: #2e7d32; font-size: 18px; }
-        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 8px; margin-bottom: 12px; }
-        .campo-box { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
-        .campo-box label { font-size: 12px; font-weight: bold; color: #444; }
-        input, select, textarea { padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-family: inherit; font-size: 13px; width: 100%; max-width: 100%; }
-        input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
-        .btn-verde { background: #2e7d32; color: white; border: none; padding: 9px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 13px; max-width: 100%; }
-        .btn-azul { background: #1565c0; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
-        .btn-naranja { background: #ef6c00; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
-        .btn-morado { background: #6a1b9a; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
-        .btn-gris { background: #546e7a; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
-        .btn-rojo { background: #c62828; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
-        .tabla-wrap { width: 100%; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 10px; }
-        table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        th { background: #eef3ee; text-align: left; padding: 8px; border-bottom: 1px solid #ccc; }
-        td { padding: 8px; border-bottom: 1px solid #eee; vertical-align: top; }
-        .metricas-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 12px; }
-        .metrica-card { background: #f4f8f4; border: 1px solid #cfe0cf; padding: 10px; border-radius: 6px; }
-        .metrica-card strong { display: block; font-size: 18px; color: #1b5e20; }
-        .panel-detalle { display:none; background:#f9fbe7; border:1px solid #dce775; padding:12px; border-radius:6px; margin-bottom:12px; }
-        .tag-ok { display:inline-block; background:#e8f5e9; color:#1b5e20; padding:2px 7px; border-radius:12px; font-size:11px; font-weight:bold; }
-        .tag-pend { display:inline-block; background:#fff3e0; color:#e65100; padding:2px 7px; border-radius:12px; font-size:11px; font-weight:bold; }
-        .oculto-por-rol { display: none !important; }
-        @media (max-width: 600px) {
-            header { padding: 8px 10px; }
-            header h2 { font-size: 14px; }
-            .container { margin: 6px auto; padding: 12px 10px; border-radius: 6px; }
-            h1 { font-size: 18px; }
-            .menu-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-            .form-grid { grid-template-columns: 1fr; }
-            table { font-size: 12px; }
-            th, td { padding: 6px; }
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 10px;
+            margin-bottom: 14px;
+            align-items: end;
         }
+        .campo-box { display: flex; flex-direction: column; gap: 4px; }
+        .campo-box label { font-size: 12px; font-weight: bold; color: #333; }
+        input, select {
+            padding: 8px 10px;
+            border: 1px solid #bbb;
+            border-radius: 5px;
+            font-size: 13px;
+            width: 100%;
+        }
+        .btn-verde { background: #2e7d32; color: #fff; border: none; padding: 9px 14px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .btn-azul { background: #1565c0; color: #fff; border: none; padding: 9px 14px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .btn-gris { background: #607d8b; color: #fff; border: none; padding: 9px 14px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .btn-rojo { background: #c62828; color: #fff; border: none; padding: 7px 10px; border-radius: 5px; cursor: pointer; font-size: 12px; }
+        .tabla-wrap { overflow-x: auto; margin-top: 12px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th, td { padding: 8px; border-bottom: 1px solid #e0e0e0; text-align: left; vertical-align: top; }
+        th { background: #eef3ee; color: #1b5e20; }
+        .metricas-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; margin-bottom: 14px; }
+        .metrica-card { background: #f9fbf9; border: 1px solid #d7e2d7; border-radius: 6px; padding: 12px; }
+        .metrica-card strong { display: block; font-size: 20px; color: #1b5e20; }
+        .metrica-card span { font-size: 12px; color: #555; }
+        .panel-detalle { display: none; border: 1px solid #ccc; border-radius: 6px; padding: 12px; margin-bottom: 14px; background: #fafafa; }
         @media print {
-            header, .menu-grid, .alertas-box, .form-grid, button, .panel-detalle { display: none !important; }
-            .container { box-shadow: none; margin: 0; max-width: 100%; }
+            header, .menu-grid, .btn-logout, .no-print { display: none !important; }
+            .modulo-box { border: none; padding: 0; }
         }
     </style>
 </head>
 <body>
     <header>
-        <div class="header-left">
-            <img id="headerLogoDiocesis" class="header-logo" alt="Logo Diócesis">
-            <img id="headerLogo1" class="header-logo" alt="Logo Parroquia">
-            <img id="headerLogo2" class="header-logo" alt="Logo Pastoral">
-            <div>
-                <h2 id="tituloHeaderParroquia">Sistema de Catequesis</h2>
-                <small id="subtituloHeaderParroquia">Gestión Pastoral y Sacramental</small>
-            </div>
+    <div class="header-info">
+        <h2 id="tituloSistema" style="margin:0; font-size:18px;">Sistema de Catequesis</h2>
+        <span id="badgeRolUsuario" class="badge-rol">Verificando perfil...</span>
+        <span id="infoParroquiaHeader" style="font-size:12px; opacity:0.9;"></span>
+    </div>
+    <button type="button" class="btn-logout" id="btnCerrarSesion">Cerrar Sesión</button>
+</header>
+
+<div class="container">
+    <div id="alertaPanel" class="alerta-banner"></div>
+
+    <div class="menu-grid">
+        <div class="card-menu active" data-tab="sec-catequizandos">
+            <h3>Catequizandos</h3>
+            <p>Inscripción completa, representante y sacramentos.</p>
         </div>
-        <button class="btn-logout" id="btnCerrarSesion">Cerrar Sesión</button>
-    </header>
-        <div class="container">
-        <span id="badgeRol" class="rol-badge">Verificando rol...</span>
-        <h1>Bienvenido al Panel de Control</h1>
-        <p class="subtitulo" id="textoBienvenida">Cargando información de tu perfil parroquial...</p>
-
-        <div id="boxAlertas" class="alertas-box">
-            <h4>Avisos y notificaciones</h4>
-            <ul id="listaAlertas"></ul>
+        <div class="card-menu" data-tab="sec-asistencia">
+            <h3>Asistencia</h3>
+            <p>Control grupal por tema y seguimiento.</p>
         </div>
-
-        <div class="menu-grid">
-            <div class="card-menu active" data-tab="sec-catequizandos">
-                <h3>Catequizandos</h3>
-                <p>Registro, edad/oyentes, etapas, comunión, confirmación y visitas.</p>
-            </div>
-            <div class="card-menu" data-tab="sec-asistencia">
-                <h3>Asistencia</h3>
-                <p>Lista tildable semanal, tema dado y seguimiento de ausencias.</p>
-            </div>
-            <div class="card-menu" id="cardCatequistas" data-tab="sec-catequistas">
-                <h3>Catequistas y Equipo</h3>
-                <p>Usuarios, roles, horarios, recuperación de clave, bajas y cumplimiento.</p>
-            </div>
-            <div class="card-menu" data-tab="sec-formacion">
-                <h3>Talleres, Quiz y Reportes</h3>
-                <p>Temas de talleres, asistencia de catequistas y reportes.</p>
-            </div>
-            <div class="card-menu" id="cardPersonalizacion" data-tab="sec-personalizacion">
-                <h3>Personalización</h3>
-                <p>Diócesis, parroquia, logos y parámetros del sistema.</p>
-            </div>
+        <div class="card-menu" data-tab="sec-catequistas">
+            <h3>Catequistas</h3>
+            <p>Equipo de catequistas, horarios y estado.</p>
         </div>
+        <div class="card-menu" data-tab="sec-formacion">
+            <h3>Talleres y Reportes</h3>
+            <p>Formación, quiz, reportes sacramentales y ajustes.</p>
+        </div>
+    </div>
 
-        <div class="modulo-box">
-                       <section id="sec-catequizandos" class="section active">
-                <h3>Catequizandos</h3>
+    <div class="modulo-box">
+            <section id="sec-catequizandos" class="section active">
+            <h3>Catequizandos — Boleta de Inscripción</h3>
 
+            <div style="background:#f9fbf9; border:1px solid #d7e2d7; border-radius:8px; padding:12px; margin-bottom:14px;">
+                <strong style="display:block; margin-bottom:8px; color:#1b5e20;">1. Datos del catequizando</strong>
                 <div class="form-grid">
-                    <div class="campo-box"><label>Nombre y apellido</label><input type="text" id="catNombre" placeholder="Nombre y apellido"></div>
-                    <div class="campo-box"><label>Fecha de nacimiento</label><input type="date" id="catNacimiento"></div>
-                    <div class="campo-box"><label>Teléfono representante</label><input type="text" id="catTelefono" placeholder="Teléfono"></div>
-                    <div class="campo-box"><label>Sector donde habita</label><input type="text" id="catSector" placeholder="Sector"></div>
                     <div class="campo-box">
-                        <label>Etapa inicial</label>
+                        <label for="catNombre">Nombre y apellido</label>
+                        <input type="text" id="catNombre" placeholder="Nombre y apellido">
+                    </div>
+                    <div class="campo-box">
+                        <label for="catNacimiento">Fecha de nacimiento</label>
+                        <input type="date" id="catNacimiento">
+                    </div>
+                    <div class="campo-box">
+                        <label for="catEdad">Edad</label>
+                        <input type="number" id="catEdad" min="0" placeholder="Edad">
+                    </div>
+                    <div class="campo-box">
+                        <label for="catCedula">Cédula de identidad</label>
+                        <input type="text" id="catCedula" placeholder="Cédula de identidad">
+                    </div>
+                    <div class="campo-box">
+                        <label for="catDireccion">Dirección</label>
+                        <input type="text" id="catDireccion" placeholder="Dirección del catequizando">
+                    </div>
+                    <div class="campo-box">
+                        <label for="catTelefono">Número de teléfono</label>
+                        <input type="text" id="catTelefono" placeholder="Teléfono del catequizando">
+                    </div>
+                </div>
+
+                <strong style="display:block; margin-bottom:8px; color:#1b5e20;">2. Datos del representante</strong>
+                <div class="form-grid">
+                    <div class="campo-box">
+                        <label for="repNombre">Nombre y apellido</label>
+                        <input type="text" id="repNombre" placeholder="Nombre y apellido del representante">
+                    </div>
+                    <div class="campo-box">
+                        <label for="repCedula">Cédula de identidad</label>
+                        <input type="text" id="repCedula" placeholder="Cédula del representante">
+                    </div>
+                    <div class="campo-box">
+                        <label for="repDireccion">Dirección</label>
+                        <input type="text" id="repDireccion" placeholder="Dirección del representante">
+                    </div>
+                    <div class="campo-box">
+                        <label for="repTelefono">Teléfono</label>
+                        <input type="text" id="repTelefono" placeholder="Teléfono del representante">
+                    </div>
+                    <div class="campo-box">
+                        <label for="repParentesco">Parentesco</label>
+                        <input type="text" id="repParentesco" placeholder="Madre, Padre, Tutor/a">
+                    </div>
+                </div>
+
+                <strong style="display:block; margin-bottom:8px; color:#1b5e20;">3. Sacramento y etapa</strong>
+                <div class="form-grid">
+                    <div class="campo-box">
+                        <label for="catSacramento">Sacramento a realizar</label>
+                        <select id="catSacramento">
+                            <option value="Comunión">Comunión</option>
+                            <option value="Confirmación">Confirmación</option>
+                        </select>
+                    </div>
+                    <div class="campo-box">
+                        <label for="catFechaInscripcionSacramento">Fecha de inscripción al sacramento</label>
+                        <input type="date" id="catFechaInscripcionSacramento">
+                    </div>
+                    <div class="campo-box">
+                        <label for="catEtapa">Etapa inicial</label>
                         <select id="catEtapa">
-                            <option value="oyente">Oyente (menor a edad mínima)</option>
+                            <option value="oyente">Oyente (menor de 9 años)</option>
                             <option value="1" selected>1.ª Etapa</option>
                             <option value="2">2.ª Etapa</option>
                             <option value="3">3.ª Etapa</option>
                             <option value="4">4.ª Etapa</option>
                         </select>
                     </div>
-                    <div class="campo-box"><label>Fecha inicio etapa</label><input type="date" id="catInicioEtapa"></div>
-                    <div class="campo-box" style="justify-content:flex-end;"><button class="btn-verde" id="btnGuardarCatequizando">Guardar Catequizando</button></div>
+                    <div class="campo-box">
+                        <label for="catInicioEtapa">Fecha inicio etapa</label>
+                        <input type="date" id="catInicioEtapa">
+                    </div>
+                    <div class="campo-box">
+                        <button type="button" class="btn-verde" id="btnGuardarCatequizando">Guardar Catequizando</button>
+                    </div>
                 </div>
+            </div>
+                       <div class="form-grid">
+                <input type="text" id="filtroCatTexto" placeholder="Buscar por nombre, cédula, representante o dirección...">
+                <select id="filtroCatSacramento">
+                    <option value="todos">Todos los sacramentos (Comunión / Confirmación)</option>
+                    <option value="Comunión">Comunión</option>
+                    <option value="Confirmación">Confirmación</option>
+                </select>
+                <select id="filtroCatEtapa">
+                    <option value="todas">Todas las etapas</option>
+                    <option value="oyente">Oyente</option>
+                    <option value="1">1.ª Etapa</option>
+                    <option value="2">2.ª Etapa</option>
+                    <option value="3">3.ª Etapa</option>
+                    <option value="4">4.ª Etapa</option>
+                </select>
+                <select id="filtroCatEstado">
+                    <option value="todos">Todos los estados</option>
+                    <option value="activos">Activos</option>
+                    <option value="seguimiento">Con seguimiento de ausencias</option>
+                    <option value="graduados">Graduados</option>
+                    <option value="retirados">Retirados</option>
+                </select>
+            </div>
 
-                <div class="form-grid">
-                    <input type="text" id="filtroCatTexto" placeholder="Buscar por nombre o sector...">
-                    <select id="filtroCatEtapa">
+            <div id="boxHistorialVisita" class="panel-detalle">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <strong id="tituloHistorialVisita">Historial de seguimiento</strong>
+                    <button type="button" class="btn-gris" id="btnCerrarHistorial">Cerrar</button>
+                </div>
+                <div id="contenidoHistorialVisita" style="margin-top:8px; font-size:13px; line-height:1.5;"></div>
+            </div>
+
+            <div id="boxSeleccionSector3" class="panel-detalle" style="background:#f1f8e9; border-color:#c5e1a5;">
+                <strong>3.ª Etapa — Incorporar catequizandos con Comunión en tu sector:</strong>
+                <div id="listaCandidatos3Etapa" style="margin-top:8px;"></div>
+            </div>
+
+            <div id="boxPromocionSelectiva" class="panel-detalle" style="background:#e8f5e9; border-color:#a5d6a7;">
+                <p id="textoPromocionSelectiva" style="margin:0 0 8px 0; font-weight:bold;"></p>
+                <div id="listaCheckboxesEtapa"></div>
+                <button type="button" class="btn-verde" id="btnConfirmarPromocion" style="margin-top:8px;">Aplicar selección</button>
+            </div>
+
+            <div class="tabla-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Catequizando</th>
+                            <th>Edad / Cédula / Nac.</th>
+                            <th>Dirección / Teléfono</th>
+                            <th>Representante</th>
+                            <th>Sacramento / Inscripción</th>
+                            <th>Etapa / Seguimiento</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyCatequizandos"></tbody>
+                </table>
+            </div>
+            </section>
+                <section id="sec-asistencia" class="section">
+            <h3>Asistencia de Catequizandos</h3>
+            <div class="metricas-grid">
+                <div class="metrica-card"><strong id="metMesesClase">0</strong><span>Meses de clase impartidos</span></div>
+                <div class="metrica-card"><strong id="metTemasDados">0</strong><span>Temas registrados</span></div>
+                <div class="metrica-card"><strong id="metAusenciasCriticas">0</strong><span id="lblMetAusenciasCriticas">Sobre límite de ausencias</span></div>
+            </div>
+            <div class="form-grid">
+                <div class="campo-box"><label for="asisFecha">Fecha de clase</label><input type="date" id="asisFecha"></div>
+                <div class="campo-box"><label for="asisTema">Tema dado en clase</label><input type="text" id="asisTema" placeholder="Tema dado en clase"></div>
+                <div class="campo-box"><label for="filtroAsisTexto">Buscar en lista</label><input type="text" id="filtroAsisTexto" placeholder="Nombre o dirección..."></div>
+                <div class="campo-box">
+                    <label for="filtroAsisEtapa">Etapa</label>
+                    <select id="filtroAsisEtapa">
                         <option value="todas">Todas las etapas</option>
                         <option value="oyente">Oyente</option>
                         <option value="1">1.ª Etapa</option>
@@ -149,1334 +308,653 @@
                         <option value="3">3.ª Etapa</option>
                         <option value="4">4.ª Etapa</option>
                     </select>
-                    <select id="filtroCatEstado">
-                        <option value="todos">Todos los estados</option>
-                        <option value="activos">Activos</option>
-                        <option value="seguimiento">Con seguimiento de ausencias</option>
-                        <option value="graduados">Graduados</option>
-                        <option value="retirados">Retirados</option>
+                </div>
+            </div>
+            <div class="tabla-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Asistió</th>
+                            <th>Catequizando</th>
+                            <th>Etapa / Dirección</th>
+                            <th>Justificado</th>
+                            <th>Observación</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyListaTomaAsistencia"></tbody>
+                </table>
+            </div>
+            <div style="margin-top:12px;">
+                <button type="button" class="btn-verde" id="btnGuardarAsistenciaGrupal">Guardar Asistencia de la Lista</button>
+            </div>
+            <h4 style="margin-top:20px;">Historial reciente de asistencias</h4>
+            <div class="tabla-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Catequizando</th>
+                            <th>Tema dado</th>
+                            <th>Estado</th>
+                            <th>Observación</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyAsistencia"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="sec-catequistas" class="section">
+            <h3>Catequistas y Coordinadores</h3>
+            <div id="boxCoordinadoresParroco" class="panel-detalle" style="background:#fff3e0; border-color:#ffcc80;">
+                <strong>Coordinadores Generales / Master activos:</strong>
+                <div id="listaCoordinadoresParroco" style="margin-top:8px;"></div>
+            </div>
+            <div class="form-grid">
+                <div class="campo-box" id="boxRolNuevoEquipo" style="display:none;">
+                    <label for="catqRolAsignar">Rol a asignar</label>
+                    <select id="catqRolAsignar">
+                        <option value="catequista" selected>Catequista</option>
+                        <option value="master">Coordinador General (Master)</option>
                     </select>
                 </div>
-
-                <div id="boxHistorialVisita" class="panel-detalle">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <strong id="tituloHistorialVisita">Historial de seguimiento</strong>
-                        <button class="btn-gris" id="btnCerrarHistorial" type="button">Cerrar</button>
-                    </div>
-                    <div id="contenidoHistorialVisita" style="margin-top:8px; font-size:13px; line-height:1.5;"></div>
+                <div class="campo-box"><label for="catqNombre">Nombre completo</label><input type="text" id="catqNombre" placeholder="Nombre y apellido"></div>
+                <div class="campo-box"><label for="catqUsuario">Usuario para iniciar sesión</label><input type="text" id="catqUsuario" placeholder="Ej: maria.perez"></div>
+                <div class="campo-box"><label for="catqPassword">Contraseña inicial</label><input type="password" id="catqPassword" placeholder="Mínimo 6 caracteres"></div>
+                <div class="campo-box"><label for="catqCorreo">Correo propio (opcional)</label><input type="email" id="catqCorreo" placeholder="Opcional"></div>
+                <div class="campo-box"><label for="catqCorreoRecup">Correo alternativo recuperación</label><input type="email" id="catqCorreoRecup" placeholder="Correo recuperación"></div>
+                <div class="campo-box"><label for="catqSector">Sector asignado</label><input type="text" id="catqSector" placeholder="Sector"></div>
+                <div class="campo-box">
+                    <label for="catqLugar">Lugar de catequesis</label>
+                    <select id="catqLugar">
+                        <option value="Capilla">Capilla</option>
+                        <option value="Escuela">Escuela</option>
+                        <option value="Casa particular">Casa particular</option>
+                    </select>
                 </div>
+                <div class="campo-box"><label for="catqDia">Día de catequesis</label><input type="text" id="catqDia" placeholder="Ej: Sábados"></div>
+                <div class="campo-box"><label for="catqHora">Hora de catequesis</label><input type="time" id="catqHora"></div>
+                <div class="campo-box"><button type="button" class="btn-verde" id="btnCrearCatequista">Registrar Integrante</button></div>
+            </div>
 
-                <div id="boxSeleccionSector3" style="display:none; background:#f1f8e9; border:1px solid #c5e1a5; padding:12px; border-radius:6px; margin-bottom:14px;">
-                    <strong>3.ª Etapa — Incorporar catequizandos con Primera Comunión en tu sector:</strong>
-                    <div id="listaCandidatos3Etapa" style="margin-top:8px;"></div>
-                </div>
-
-                <div id="boxPromocionSelectiva" style="display:none; background:#e8f5e9; border:1px solid #a5d6a7; padding:12px; border-radius:6px; margin-bottom:14px;">
-                    <p id="textoPromocionSelectiva" style="margin:0 0 8px 0; font-weight:bold;"></p>
-                    <div id="listaCheckboxesEtapa"></div>
-                    <button class="btn-verde" id="btnConfirmarPromocion" style="margin-top:8px;">Aplicar selección</button>
-                </div>
-
-                <div class="tabla-wrap">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Edad / Tipo</th>
-                                <th>Sector / Tel.</th>
-                                <th>Etapa / Fechas</th>
-                                <th>Comunión / Confirmación</th>
-                                <th>Ausencias y Visitas</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbodyCatequizandos"></tbody>
-                    </table>
-                </div>
-                       </section>
-                        <section id="sec-asistencia" class="section">
-                <h3>Asistencia de Catequizandos (Lista Tildable)</h3>
-
-                <div class="metricas-grid">
-                    <div class="metrica-card"><strong id="metMesesClase">0</strong><span>Meses de clase impartidos</span></div>
-                    <div class="metrica-card"><strong id="metTemasDados">0</strong><span>Temas registrados</span></div>
-                    <div class="metrica-card"><strong id="metAusenciasCriticas">0</strong><span id="lblMetAusenciasCriticas">Sobre límite de ausencias</span></div>
-                </div>
-
+            <div id="boxEditarCatequista" class="panel-detalle" style="background:#e3f2fd; border-color:#90caf9;">
+                <strong id="tituloEditarEquipo" style="display:block; margin-bottom:8px; color:#0d47a1;">Editar registro</strong>
+                <input type="hidden" id="editCatqId">
+                <input type="hidden" id="editCatqTablaOrigen" value="catequistas">
                 <div class="form-grid">
-                    <div class="campo-box"><label>Fecha de clase</label><input type="date" id="asisFecha"></div>
-                    <div class="campo-box"><label>Tema dado en clase</label><input type="text" id="asisTema" placeholder="Ej: Los Mandamientos"></div>
-                    <div class="campo-box"><label>Buscar en lista</label><input type="text" id="filtroAsisTexto" placeholder="Filtrar por nombre o sector..."></div>
-                    <div class="campo-box">
-                        <label>Filtrar etapa</label>
-                        <select id="filtroAsisEtapa">
-                            <option value="todas">Todas las etapas</option>
-                            <option value="oyente">Oyente</option>
-                            <option value="1">1.ª Etapa</option>
-                            <option value="2">2.ª Etapa</option>
-                            <option value="3">3.ª Etapa</option>
-                            <option value="4">4.ª Etapa</option>
-                        </select>
-                    </div>
-                </div>
-
-                <p style="font-size:13px; color:#555; margin:4px 0 10px 0;">
-                    Tilda la casilla de quienes <strong>asistieron</strong>. Quien quede destildado se registrará automáticamente como <strong>ausente</strong> (puedes marcar "Justificado" si presentó excusa).
-                </p>
-
-                <div class="tabla-wrap">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th style="width:65px;">Asistió</th>
-                                <th>Catequizando</th>
-                                <th>Etapa / Sector</th>
-                                <th style="width:90px;">Justificado</th>
-                                <th>Observación</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbodyListaTomaAsistencia"></tbody>
-                    </table>
-                </div>
-
-                <div style="margin-top:12px;">
-                    <button class="btn-verde" id="btnGuardarAsistenciaGrupal">Guardar Asistencia de la Lista</button>
-                </div>
-
-                <h4 style="margin-top:22px;">Historial reciente de asistencias</h4>
-                <div class="tabla-wrap">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Fecha</th>
-                                <th>Catequizando</th>
-                                <th>Tema dado</th>
-                                <th>Estado</th>
-                                <th>Observación</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbodyAsistencia"></tbody>
-                    </table>
-                </div>
-            </section>
-
-            <section id="sec-catequistas" class="section">
-                <h3>Catequistas y Coordinadores</h3>
-
-                <div id="boxCoordinadoresParroco" style="display:none; background:#fff3e0; border:1px solid #ffcc80; padding:12px; border-radius:6px; margin-bottom:16px;">
-                    <strong>Coordinadores Generales / Master activos (Supervisión del Párroco):</strong>
-                    <div id="listaCoordinadoresParroco" style="margin-top:8px;"></div>
-                </div>
-
-                <div class="form-grid">
-                    <div class="campo-box" id="boxRolNuevoEquipo" style="display:none;">
-                        <label>Rol a asignar</label>
-                        <select id="catqRolAsignar">
-                            <option value="catequista" selected>Catequista</option>
+                    <div class="campo-box" id="boxRolEditarEquipo" style="display:none;">
+                        <label for="editCatqRol">Rol en el sistema</label>
+                        <select id="editCatqRol">
+                            <option value="catequista">Catequista</option>
                             <option value="master">Coordinador General (Master)</option>
                         </select>
                     </div>
-                    <div class="campo-box"><label>Nombre completo</label><input type="text" id="catqNombre" placeholder="Nombre y apellido"></div>
-                    <div class="campo-box"><label>Usuario para iniciar sesión</label><input type="text" id="catqUsuario" placeholder="Ej: maria.perez"></div>
-                    <div class="campo-box"><label>Contraseña inicial</label><input type="password" id="catqPassword" placeholder="Mínimo 6 caracteres"></div>
-                    <div class="campo-box"><label>Correo propio (opcional)</label><input type="email" id="catqCorreo" placeholder="Opcional si no tiene"></div>
-                    <div class="campo-box"><label>Correo alternativo recuperación</label><input type="email" id="catqCorreoRecup" placeholder="Correo familiar / coordinador"></div>
-                    <div class="campo-box"><label>Sector asignado</label><input type="text" id="catqSector" placeholder="Sector"></div>
+                    <div class="campo-box"><label for="editCatqNombre">Nombre completo</label><input type="text" id="editCatqNombre"></div>
+                    <div class="campo-box"><label for="editCatqUsuario">Usuario de acceso</label><input type="text" id="editCatqUsuario"></div>
+                    <div class="campo-box"><label for="editCatqCorreoRecup">Correo alternativo recuperación</label><input type="email" id="editCatqCorreoRecup"></div>
+                    <div class="campo-box"><label for="editCatqSector">Sector</label><input type="text" id="editCatqSector"></div>
                     <div class="campo-box">
-                        <label>Lugar de catequesis</label>
-                        <select id="catqLugar">
+                        <label for="editCatqLugar">Lugar</label>
+                        <select id="editCatqLugar">
                             <option value="Capilla">Capilla</option>
                             <option value="Escuela">Escuela</option>
                             <option value="Casa particular">Casa particular</option>
                         </select>
                     </div>
-                    <div class="campo-box"><label>Día de catequesis</label><input type="text" id="catqDia" placeholder="Ej: Sábados"></div>
-                    <div class="campo-box"><label>Hora de catequesis</label><input type="time" id="catqHora"></div>
-                    <div class="campo-box" style="justify-content:flex-end;"><button class="btn-verde" id="btnCrearCatequista">Registrar Integrante</button></div>
-                </div>
-
-                <div id="boxEditarCatequista" class="panel-detalle" style="background:#e3f2fd; border-color:#90caf9;">
-                    <strong id="tituloEditarEquipo" style="display:block; margin-bottom:8px; color:#0d47a1;">Editar registro</strong>
-                    <input type="hidden" id="editCatqId">
-                    <input type="hidden" id="editCatqTablaOrigen" value="catequistas">
-                    <div class="form-grid">
-                        <div class="campo-box" id="boxRolEditarEquipo" style="display:none;">
-                            <label>Rol en el sistema</label>
-                            <select id="editCatqRol">
-                                <option value="catequista">Catequista</option>
-                                <option value="master">Coordinador General (Master)</option>
-                            </select>
-                        </div>
-                        <div class="campo-box"><label>Nombre completo</label><input type="text" id="editCatqNombre"></div>
-                        <div class="campo-box"><label>Usuario de acceso</label><input type="text" id="editCatqUsuario"></div>
-                        <div class="campo-box"><label>Correo alternativo recuperación</label><input type="email" id="editCatqCorreoRecup" placeholder="Correo para recuperar clave"></div>
-                        <div class="campo-box"><label>Sector</label><input type="text" id="editCatqSector"></div>
-                        <div class="campo-box">
-                            <label>Lugar</label>
-                            <select id="editCatqLugar">
-                                <option value="Capilla">Capilla</option>
-                                <option value="Escuela">Escuela</option>
-                                <option value="Casa particular">Casa particular</option>
-                            </select>
-                        </div>
-                        <div class="campo-box"><label>Día de catequesis</label><input type="text" id="editCatqDia" placeholder="Ej: Sábados"></div>
-                        <div class="campo-box"><label>Hora de catequesis</label><input type="time" id="editCatqHora"></div>
-                        <div class="campo-box">
-                            <label>Estado</label>
-                            <select id="editCatqActivo">
-                                <option value="true">Activo</option>
-                                <option value="false">De baja</option>
-                            </select>
-                        </div>
-                    </div>
-                    <button class="btn-verde" id="btnGuardarEdicionCatequista">Guardar cambios</button>
-                    <button class="btn-gris" id="btnCancelarEdicionCatequista" type="button">Cancelar</button>
-                </div>
-
-                <div class="tabla-wrap">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Catequista / Usuario</th>
-                                <th>Sector, Lugar y Horario</th>
-                                <th>Ciclo / Estado</th>
-                                <th>Talleres realizados / pendientes</th>
-                                <th>Meses / Temas</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tbodyCatequistas"></tbody>
-                    </table>
-                </div>
-            </section>
-                       <section id="sec-formacion" class="section">
-                <h3>Talleres, Quiz y Reportes</h3>
-
-                <div id="boxMiProgresoTalleres" style="background:#f1f8e9; border:1px solid #c5e1a5; padding:12px; border-radius:6px; margin-bottom:16px;">
-                    <strong>Estado de tus talleres de formación:</strong>
-                    <div id="resumenTalleresUsuario" style="margin-top:6px; font-size:13px;"></div>
-                </div>
-
-                <div id="boxFormCrearTaller" class="form-grid">
-                    <div class="campo-box"><label>Título del taller</label><input type="text" id="tallerTitulo" placeholder="Ej: Taller de Pedagogía"></div>
-                    <div class="campo-box"><label>Fecha del taller</label><input type="date" id="tallerFecha"></div>
-                    <div class="campo-box"><label>Temas incluidos en el taller</label><input type="text" id="tallerTemas" placeholder="Tema 1, Tema 2..."></div>
-                    <div class="campo-box" style="justify-content:flex-end;"><button class="btn-verde" id="btnCrearTaller">Publicar Taller</button></div>
-                </div>
-
-                <div id="listaTalleres" style="margin-bottom:18px;"></div>
-
-                <div id="boxAsistenciaTaller" class="panel-detalle" style="background:#e8f5e9; border-color:#a5d6a7;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                        <strong id="tituloAsistenciaTaller">Asistencia de catequistas al taller</strong>
-                        <button class="btn-gris" id="btnCerrarAsistenciaTaller" type="button">Cerrar</button>
-                    </div>
-                    <input type="hidden" id="tallerAsisId">
-                    <div class="form-grid">
-                        <input type="text" id="filtroTallerCatqTexto" placeholder="Buscar catequista por nombre...">
-                        <select id="filtroTallerCatqSector"><option value="">Todos los sectores</option></select>
-                        <select id="filtroTallerCatqLugar">
-                            <option value="">Todos los lugares</option>
-                            <option value="Capilla">Capilla</option>
-                            <option value="Escuela">Escuela</option>
-                            <option value="Casa particular">Casa particular</option>
+                    <div class="campo-box"><label for="editCatqDia">Día de catequesis</label><input type="text" id="editCatqDia"></div>
+                    <div class="campo-box"><label for="editCatqHora">Hora de catequesis</label><input type="time" id="editCatqHora"></div>
+                    <div class="campo-box">
+                        <label for="editCatqActivo">Estado</label>
+                        <select id="editCatqActivo">
+                            <option value="true">Activo</option>
+                            <option value="false">De baja</option>
                         </select>
                     </div>
-                    <div class="tabla-wrap">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th style="width:70px;">Asistió</th>
-                                    <th>Catequista</th>
-                                    <th>Sector</th>
-                                    <th>Lugar</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tbodyAsistenciaTaller"></tbody>
-                        </table>
-                    </div>
-                    <button class="btn-verde" id="btnGuardarAsistenciaTaller" type="button" style="margin-top:10px;">Guardar Asistencia al Taller</button>
                 </div>
+                <button type="button" class="btn-verde" id="btnGuardarEdicionCatequista">Guardar cambios</button>
+                <button type="button" class="btn-gris" id="btnCancelarEdicionCatequista">Cancelar</button>
+            </div>
 
-                <hr style="border:0; border-top:1px solid #e0e0e0; margin:16px 0;">
+            <div class="tabla-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Catequista / Usuario</th>
+                            <th>Sector, Lugar y Horario</th>
+                            <th>Ciclo / Estado</th>
+                            <th>Talleres</th>
+                            <th>Meses / Temas</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyCatequistas"></tbody>
+                </table>
+            </div>
+                            </section>
+            <section id="sec-formacion" class="section">
+            <h3>Talleres, Quiz, Reportes y Configuración</h3>
+            <div class="form-grid">
+                <div class="campo-box"><label for="tallerTitulo">Título del taller</label><input type="text" id="tallerTitulo" placeholder="Título"></div>
+                <div class="campo-box"><label for="tallerFecha">Fecha</label><input type="date" id="tallerFecha"></div>
+                <div class="campo-box"><label for="tallerTemas">Temas a tratar</label><input type="text" id="tallerTemas" placeholder="Temas"></div>
+                <div class="campo-box"><button type="button" class="btn-verde" id="btnCrearTaller">Publicar Taller</button></div>
+            </div>
+            <div id="listaTalleres" style="margin-bottom:16px;"></div>
 
-                <h4>Evaluación mediante Quiz (por temas)</h4>
-                <div class="form-grid">
-                    <input type="text" id="quizTema" placeholder="Tema del quiz">
-                    <input type="text" id="quizPregunta" placeholder="Pregunta de evaluación">
-                    <input type="text" id="quizRespuesta" placeholder="Respuesta esperada / clave">
-                    <button class="btn-azul" id="btnGuardarQuiz">Guardar Pregunta Quiz</button>
-                </div>
-                <div id="listaQuizzes" style="margin-bottom:18px;"></div>
+            <hr style="border:0; border-top:1px solid #e0e0e0; margin:16px 0;">
+            <h4>Evaluación mediante Quiz</h4>
+            <div class="form-grid">
+                <div class="campo-box"><label for="quizTema">Tema</label><input type="text" id="quizTema" placeholder="Tema del quiz"></div>
+                <div class="campo-box"><label for="quizPregunta">Pregunta</label><input type="text" id="quizPregunta" placeholder="Pregunta"></div>
+                <div class="campo-box"><label for="quizRespuesta">Respuesta esperada</label><input type="text" id="quizRespuesta" placeholder="Respuesta"></div>
+                <div class="campo-box"><button type="button" class="btn-azul" id="btnGuardarQuiz">Guardar Pregunta Quiz</button></div>
+            </div>
+            <div id="listaQuizzes" style="margin-bottom:16px;"></div>
 
-                <hr style="border:0; border-top:1px solid #e0e0e0; margin:16px 0;">
-
-                <h4>Reportes del Sistema</h4>
-                <div class="form-grid">
-                    <select id="filtroReporteTipo">
-                        <option value="catequizandos">Reporte de Catequizandos</option>
-                        <option value="comunion_confirmacion">Primera Comunión y Confirmación</option>
-                        <option value="retiros_visitas">Retiros y Visitas por Ausencias</option>
-                        <option value="catequistas">Cumplimiento, Horarios y Talleres de Catequistas</option>
+            <hr style="border:0; border-top:1px solid #e0e0e0; margin:16px 0;">
+            <h4>Reportes Sacramentales y del Sistema</h4>
+            <div class="form-grid no-print">
+                <div class="campo-box">
+                    <label for="filtroReporteSacramento">Sacramento (solo Comunión o Confirmación)</label>
+                    <select id="filtroReporteSacramento">
+                        <option value="todos">Comunión y Confirmación</option>
+                        <option value="Comunión">Solo Comunión</option>
+                        <option value="Confirmación">Solo Confirmación</option>
                     </select>
-                    <button class="btn-verde" id="btnGenerarReporte">Generar Reporte</button>
-                    <button class="btn-gris" id="btnExportarCsv" type="button">Exportar CSV</button>
-                    <button class="btn-azul" id="btnImprimirReporte" type="button">Imprimir</button>
                 </div>
-                <div id="salidaReporte" class="tabla-wrap"></div>
-            </section>
-
-            <section id="sec-personalizacion" class="section">
-                <h3>Personalización de Diócesis, Parroquia y Logos</h3>
-                <div id="boxConfigParroquia">
-                    <div class="form-grid">
-                        <div class="campo-box">
-                            <label for="cfgNombreDiocesis">Nombre de la diócesis</label>
-                            <input type="text" id="cfgNombreDiocesis" placeholder="Ej: Diócesis de Guanare">
-                        </div>
-                        <div class="campo-box">
-                            <label for="cfgNombreParroquia">Nombre de la parroquia</label>
-                            <input type="text" id="cfgNombreParroquia">
-                        </div>
-                        <div class="campo-box">
-                            <label for="cfgLocalidad">Localidad o ciudad</label>
-                            <input type="text" id="cfgLocalidad">
-                        </div>
-                        <div class="campo-box">
-                            <label for="cfgLimiteAusencias">Límite de ausencias (para activar visitas)</label>
-                            <input type="number" id="cfgLimiteAusencias" min="1">
-                        </div>
-                        <div class="campo-box">
-                            <label for="cfgVisitasCat">Visitas requeridas del catequista</label>
-                            <input type="number" id="cfgVisitasCat" min="1">
-                        </div>
-                        <div class="campo-box">
-                            <label for="cfgEdadMinima">Edad mínima para 1.ª Etapa (años)</label>
-                            <input type="number" id="cfgEdadMinima" min="1">
-                        </div>
-                        <div class="campo-box">
-                            <label for="cfgLogoDiocesisArchivo">Logo de la diócesis (archivo)</label>
-                            <input type="file" id="cfgLogoDiocesisArchivo" accept="image/*">
-                        </div>
-                        <div class="campo-box">
-                            <label for="cfgLogoPrincipalArchivo">Logo de la parroquia (archivo)</label>
-                            <input type="file" id="cfgLogoPrincipalArchivo" accept="image/*">
-                        </div>
-                        <div class="campo-box">
-                            <label for="cfgLogoSecundarioArchivo">Logo pastoral / catequesis (archivo)</label>
-                            <input type="file" id="cfgLogoSecundarioArchivo" accept="image/*">
-                        </div>
-                        <div class="campo-box" style="justify-content:flex-end;">
-                            <button class="btn-verde" id="btnGuardarConfigParroquia" type="button">Guardar Configuración y Logos</button>
-                        </div>
-                    </div>
+                <div class="campo-box">
+                    <label for="repDesde">Fecha inscripción desde</label>
+                    <input type="date" id="repDesde">
                 </div>
-            </section>
-        </div>
-        </div>
-        <script type="module">
-        import { supabase } from './supabaseClient.js'
+                <div class="campo-box">
+                    <label for="repHasta">Fecha inscripción hasta</label>
+                    <input type="date" id="repHasta">
+                </div>
+                <div class="campo-box">
+                    <label for="filtroReporteTipo">Tipo de reporte</label>
+                    <select id="filtroReporteTipo">
+                        <option value="sacramentos">Inscripción a Comunión / Confirmación</option>
+                        <option value="catequizandos">Ficha completa Catequizandos y Representantes</option>
+                        <option value="retiros_visitas">Retiros y Visitas por Ausencias</option>
+                        <option value="catequistas">Cumplimiento de Catequistas</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-grid no-print">
+                <button type="button" class="btn-verde" id="btnGenerarReporte">Generar Reporte</button>
+                <button type="button" class="btn-gris" id="btnExportarCsv">Exportar CSV</button>
+                <button type="button" class="btn-azul" id="btnImprimirReporte">Imprimir</button>
+            </div>
+            <div id="salidaReporte" class="tabla-wrap"></div>
 
-        window.appState = {
-            perfilActual: null,
-            configParroquia: {
-                id: null,
-                nombre_diocesis: '',
-                nombre_parroquia: 'Virgen de Coromoto y San Antonio de Padua',
-                localidad: 'Biscucuy',
-                limite_ausencias: 4,
-                visitas_catequista_requeridas: 2,
-                edad_minima_etapa: 9,
-                logo_parroquia_url: null,
-                logo_diocesis_url: null
-            },
-            agregarAlerta: function(texto) {
-                const box = document.getElementById('boxAlertas')
-                const ul = document.getElementById('listaAlertas')
-                if (!box || !ul) return
-                const existe = Array.from(ul.children).some(li => li.textContent === texto)
-                if (existe) return
-                const li = document.createElement('li')
-                li.textContent = texto
-                ul.appendChild(li)
-                box.style.display = 'block'
+            <div id="boxConfigParroquia" class="panel-detalle" style="margin-top:20px;">
+                <h4>Personalización de la Parroquia</h4>
+                <div class="form-grid">
+                    <div class="campo-box"><label for="cfgNombreParroquia">Parroquia</label><input type="text" id="cfgNombreParroquia"></div>
+                    <div class="campo-box"><label for="cfgLocalidad">Localidad</label><input type="text" id="cfgLocalidad"></div>
+                    <div class="campo-box"><label for="cfgLimiteAusencias">Límite ausencias</label><input type="number" id="cfgLimiteAusencias" min="1"></div>
+                    <div class="campo-box"><label for="cfgVisitasCat">Visitas catequista</label><input type="number" id="cfgVisitasCat" min="1"></div>
+                    <div class="campo-box"><label for="cfgEdadMinima">Edad mínima etapa</label><input type="number" id="cfgEdadMinima" min="1"></div>
+                    <div class="campo-box"><button type="button" class="btn-verde" id="btnGuardarConfigParroquia">Guardar Configuración</button></div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+<script type="module">
+    import { supabase } from './supabaseClient.js';
+
+    window.appState = {
+        perfilActual: null,
+        rolActual: 'catequista',
+        configParroquia: {
+            nombre_parroquia: 'Parroquia',
+            localidad: '',
+            limite_ausencias: 4,
+            visitas_catequista_requeridas: 2,
+            edad_minima_etapa: 9
+        }
+    };
+
+    let catequizandosCache = [];
+    let catequistasCache = [];
+    let asistenciaCache = [];
+    let loteCierrePendiente = null;
+    let ultimoReporteFilas = [];
+
+    function calcularEdad(fechaNacStr) {
+        if (!fechaNacStr) return '';
+        const hoy = new Date();
+        const nac = new Date(fechaNacStr + 'T00:00:00');
+        let edad = hoy.getFullYear() - nac.getFullYear();
+        const m = hoy.getMonth() - nac.getMonth();
+        if (m < 0 || (m === 0 && hoy.getDate() < nac.getDate())) edad--;
+        return edad;
+    }
+
+    function normalizarSacramento(valor) {
+        return valor === 'Confirmación' ? 'Confirmación' : 'Comunión';
+    }
+
+    async function verificarSesionYPerfil() {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+            window.location.href = './index.html';
+            return false;
+        }
+        const email = (session.user.email || '').toLowerCase();
+        const { data: admins } = await supabase.from('administradores').select('*');
+        const adminMatch = (admins || []).find(a => (a.correo || '').toLowerCase() === email);
+
+        if (adminMatch) {
+            window.appState.rolActual = adminMatch.rol || 'parroco';
+            window.appState.perfilActual = { ...adminMatch, origen: 'administradores' };
+        } else {
+            const { data: cats } = await supabase.from('catequistas').select('*');
+            const catMatch = (cats || []).find(c =>
+                (c.correo_acceso || '').toLowerCase() === email ||
+                (c.correo_propio || '').toLowerCase() === email
+            );
+            window.appState.rolActual = catMatch?.rol || 'catequista';
+            window.appState.perfilActual = catMatch ? { ...catMatch, origen: 'catequistas' } : { correo_acceso: email, origen: 'auth' };
+        }
+
+        document.getElementById('badgeRolUsuario').textContent = `Rol: ${window.appState.rolActual}`;
+        const esParrocoOMaster = ['parroco', 'master'].includes(window.appState.rolActual);
+        document.getElementById('boxConfigParroquia').style.display = esParrocoOMaster ? 'block' : 'none';
+        document.getElementById('boxRolNuevoEquipo').style.display = window.appState.rolActual === 'parroco' ? 'flex' : 'none';
+        document.getElementById('boxRolEditarEquipo').style.display = window.appState.rolActual === 'parroco' ? 'flex' : 'none';
+        document.getElementById('boxCoordinadoresParroco').style.display = window.appState.rolActual === 'parroco' ? 'block' : 'none';
+        return true;
+    }
+
+    document.getElementById('btnCerrarSesion').addEventListener('click', async () => {
+        await supabase.auth.signOut();
+        window.location.href = './index.html';
+    });
+
+    document.querySelectorAll('.card-menu').forEach(card => {
+        card.addEventListener('click', () => {
+            document.querySelectorAll('.card-menu').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            card.classList.add('active');
+            document.getElementById(card.dataset.tab).classList.add('active');
+            if (card.dataset.tab === 'sec-formacion') generarReporte();
+        });
+    });
+        document.getElementById('catNacimiento').addEventListener('change', (e) => {
+        if (e.target.value) {
+            document.getElementById('catEdad').value = calcularEdad(e.target.value);
+        }
+    });
+
+    document.getElementById('btnGuardarCatequizando').addEventListener('click', async () => {
+        const nombre = document.getElementById('catNombre').value.trim();
+        const nac = document.getElementById('catNacimiento').value;
+        const edadInput = document.getElementById('catEdad').value;
+        const cedula = document.getElementById('catCedula').value.trim();
+        const direccion = document.getElementById('catDireccion').value.trim();
+        const telefono = document.getElementById('catTelefono').value.trim();
+
+        const repNombre = document.getElementById('repNombre').value.trim();
+        const repCedula = document.getElementById('repCedula').value.trim();
+        const repDireccion = document.getElementById('repDireccion').value.trim();
+        const repTelefono = document.getElementById('repTelefono').value.trim();
+        const repParentesco = document.getElementById('repParentesco').value.trim();
+
+        const sacramento = normalizarSacramento(document.getElementById('catSacramento').value);
+        const fechaInscripcionSacramento = document.getElementById('catFechaInscripcionSacramento').value || new Date().toISOString().slice(0, 10);
+
+        let etapa = document.getElementById('catEtapa').value;
+        const inicio = document.getElementById('catInicioEtapa').value || new Date().toISOString().slice(0, 10);
+        const edadMin = Number(window.appState.configParroquia.edad_minima_etapa || 9);
+
+        if (!nombre || !nac) return alert('Ingresa al menos nombre y apellido y fecha de nacimiento.');
+        const edadFinal = edadInput !== '' ? Number(edadInput) : Number(calcularEdad(nac) || 0);
+        if (edadFinal < edadMin && etapa !== 'oyente') {
+            alert(`Por tener menos de ${edadMin} años, se registrará como Oyente.`);
+            etapa = 'oyente';
+        }
+
+        const { error } = await supabase.from('catequizandos').insert({
+            nombre_completo: nombre,
+            fecha_nacimiento: nac,
+            edad: edadFinal,
+            cedula: cedula || null,
+            direccion: direccion || null,
+            telefono: telefono || null,
+            sector: direccion || null,
+            representante: repNombre || null,
+            representante_nombre: repNombre || null,
+            representante_cedula: repCedula || null,
+            representante_direccion: repDireccion || null,
+            telefono_representante: repTelefono || null,
+            representante_parentesco: repParentesco || null,
+            sacramento_realizar: sacramento,
+            fecha_inscripcion_sacramento: fechaInscripcionSacramento,
+            etapa_actual: etapa,
+            fecha_inicio_etapa: inicio,
+            catequista_id: window.appState.perfilActual?.id || null
+        });
+
+        if (error) return alert('Error al guardar catequizando: ' + error.message);
+
+        [
+            'catNombre', 'catNacimiento', 'catEdad', 'catCedula', 'catDireccion', 'catTelefono',
+            'repNombre', 'repCedula', 'repDireccion', 'repTelefono', 'repParentesco',
+            'catFechaInscripcionSacramento'
+        ].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.value = '';
+        });
+        await cargarCatequizandos();
+    });
+
+    function renderizarCatequizandos() {
+        const qTexto = (document.getElementById('filtroCatTexto').value || '').trim().toLowerCase();
+        const qSac = document.getElementById('filtroCatSacramento').value;
+        const qEtapa = document.getElementById('filtroCatEtapa').value;
+        const qEstado = document.getElementById('filtroCatEstado').value;
+        const tbody = document.getElementById('tbodyCatequizandos');
+        tbody.innerHTML = '';
+
+        const lista = catequizandosCache.filter(cz => {
+            const sacNorm = normalizarSacramento(cz.sacramento_realizar);
+            if (qSac !== 'todos' && sacNorm !== qSac) return false;
+            if (qEtapa !== 'todas' && String(cz.etapa_actual || '') !== qEtapa) return false;
+            if (qEstado === 'activos' && cz.retirado) return false;
+            if (qEstado === 'retirados' && !cz.retirado) return false;
+            if (qEstado === 'graduados' && !cz.graduado) return false;
+            if (qEstado === 'seguimiento' && (!cz.estado_seguimiento || cz.estado_seguimiento === 'normal')) return false;
+            if (qTexto) {
+                const blob = [
+                    cz.nombre_completo, cz.cedula, cz.direccion, cz.telefono,
+                    cz.representante_nombre || cz.representante, cz.representante_cedula,
+                    cz.representante_direccion, cz.representante_parentesco, sacNorm
+                ].filter(Boolean).join(' ').toLowerCase();
+                if (!blob.includes(qTexto)) return false;
             }
-        }
+            return true;
+        });
 
-        let catequizandosCache = []
-        let asistenciaCache = []
-        let catequistasCache = []
-        let coordinadoresCache = []
-        let talleresCache = []
-        let talleresAsistenciaCache = []
-        let ausenciasPorAlumno = {}
-        let loteCierrePendiente = null
-        let ultimoReporteFilas = []
+        lista.forEach(cz => {
+            const edadMostrada = cz.edad ?? calcularEdad(cz.fecha_nacimiento) ?? '-';
+            const repNom = cz.representante_nombre || cz.representante || '-';
+            const repInfo = [
+                repNom,
+                cz.representante_cedula ? `CI: ${cz.representante_cedula}` : '',
+                cz.representante_parentesco ? `(${cz.representante_parentesco})` : '',
+                cz.representante_direccion ? `Dir: ${cz.representante_direccion}` : '',
+                cz.telefono_representante ? `Tel: ${cz.telefono_representante}` : ''
+            ].filter(Boolean).join(' · ');
 
-        function calcularEdad(fechaNac) {
-            if (!fechaNac) return 0
-            const hoy = new Date()
-            const nac = new Date(fechaNac + 'T00:00:00')
-            let edad = hoy.getFullYear() - nac.getFullYear()
-            const m = hoy.getMonth() - nac.getMonth()
-            if (m < 0 || (m === 0 && hoy.getDate() < nac.getDate())) edad--
-            return edad
-        }
+            tbody.innerHTML += `
+                <tr>
+                    <td><strong>${cz.nombre_completo || '-'}</strong></td>
+                    <td>Edad: ${edadMostrada}<br>CI: ${cz.cedula || '-'}<br>Nac: ${cz.fecha_nacimiento || '-'}</td>
+                    <td>Dir: ${cz.direccion || cz.sector || '-'}<br>Tel: ${cz.telefono || '-'}</td>
+                    <td>${repInfo || '-'}</td>
+                    <td><strong>${normalizarSacramento(cz.sacramento_realizar)}</strong><br>Insc: ${cz.fecha_inscripcion_sacramento || '-'}</td>
+                    <td>Etapa: ${cz.etapa_actual || '-'}<br>${cz.retirado ? 'Retirado: ' + (cz.causa_retiro || '') : (cz.estado_seguimiento || 'Activo')}</td>
+                    <td>
+                        ${!cz.retirado ? `<button type="button" class="btn-verde" style="padding:5px 8px; font-size:12px;" onclick="cerrarEtapaAlumno('${cz.id}')">Cerrar etapa</button>` : ''}
+                        ${!cz.retirado ? `<button type="button" class="btn-rojo" style="margin-top:4px;" onclick="retirarCatequizando('${cz.id}')">Retirar</button>` : ''}
+                    </td>
+                </tr>
+            `;
+        });
+    }
 
-        function aplicarLogosEnPantalla(urlDiocesis, url1, url2) {
-            const hd = document.getElementById('headerLogoDiocesis')
-            const h1 = document.getElementById('headerLogo1')
-            const h2 = document.getElementById('headerLogo2')
-            if (hd && urlDiocesis) {
-                hd.src = urlDiocesis
-                hd.onload = () => { hd.style.display = 'block' }
-                hd.onerror = () => { hd.style.display = 'none' }
-            }
-            if (h1 && url1) {
-                h1.src = url1
-                h1.onload = () => { h1.style.display = 'block' }
-                h1.onerror = () => { h1.style.display = 'none' }
-            }
-            if (h2 && url2) {
-                h2.src = url2
-                h2.onload = () => { h2.style.display = 'block' }
-                h2.onerror = () => { h2.style.display = 'none' }
-            }
-        }
-
-        async function cargarConfigParroquia() {
-            const { data } = await supabase.from('configuracion_parroquia').select('*').limit(1).maybeSingle()
-            if (data) window.appState.configParroquia = { ...window.appState.configParroquia, ...data }
-            const cfg = window.appState.configParroquia
-            const diocesisTxt = cfg.nombre_diocesis || localStorage.getItem('nombre_diocesis') || ''
-
-            document.getElementById('tituloHeaderParroquia').textContent = `Sistema de Catequesis · ${cfg.nombre_parroquia}`
-            document.getElementById('subtituloHeaderParroquia').textContent = [diocesisTxt, cfg.localidad].filter(Boolean).join(' · ') || 'Gestión Pastoral y Sacramental'
-            document.getElementById('lblMetAusenciasCriticas').textContent = `Con > ${cfg.limite_ausencias} ausencias`
-            document.getElementById('cfgNombreDiocesis').value = diocesisTxt
-            document.getElementById('cfgNombreParroquia').value = cfg.nombre_parroquia || ''
-            document.getElementById('cfgLocalidad').value = cfg.localidad || ''
-            document.getElementById('cfgLimiteAusencias').value = cfg.limite_ausencias
-            document.getElementById('cfgVisitasCat').value = cfg.visitas_catequista_requeridas
-            document.getElementById('cfgEdadMinima').value = cfg.edad_minima_etapa
-
-            const logoDiocesis = cfg.logo_diocesis_url || localStorage.getItem('logo_diocesis') || ''
-            const logo1 = cfg.logo_parroquia_url || localStorage.getItem('logo_parroquia_1') || ''
-            const logo2 = localStorage.getItem('logo_parroquia_2') || ''
-            aplicarLogosEnPantalla(logoDiocesis, logo1, logo2)
-        }
-                  async function cargarAusenciasConteo() {
-            const { data } = await supabase.from('asistencia').select('*')
-            asistenciaCache = data || []
-            ausenciasPorAlumno = {}
-            asistenciaCache.forEach(reg => {
-                if (reg.estado === 'ausente' || reg.estado === 'ausente_justificado') {
-                    ausenciasPorAlumno[reg.catequizando_id] = (ausenciasPorAlumno[reg.catequizando_id] || 0) + 1
-                }
-            })
-        }
-
-        function cumpleVisitasCatequista(alum) {
-            const req = Number(window.appState.configParroquia.visitas_catequista_requeridas || 2)
-            if (req <= 1) return Boolean(alum.visita_catequista_1_fecha)
-            return Boolean(alum.visita_catequista_1_fecha && alum.visita_catequista_2_fecha)
-        }
-
-        async function cargarCatequizandos() {
-            await cargarAusenciasConteo()
-            const { data, error } = await supabase.from('catequizandos').select('*').order('nombre_completo', { ascending: true })
-            if (error || !data) return
-
-            const edadMin = Number(window.appState.configParroquia.edad_minima_etapa || 9)
-            const limAus = Number(window.appState.configParroquia.limite_ausencias || 4)
-            const reqVisitasCat = Number(window.appState.configParroquia.visitas_catequista_requeridas || 2)
-
-            for (const alum of data) {
-                const edad = calcularEdad(alum.fecha_nacimiento)
-                if (alum.etapa_actual === 'oyente' && edad >= edadMin && !alum.retirado) {
-                    await supabase.from('catequizandos').update({ etapa_actual: '1', fecha_inicio_etapa: new Date().toISOString().slice(0, 10) }).eq('id', alum.id)
-                    alum.etapa_actual = '1'
-                    window.appState.agregarAlerta(`${alum.nombre_completo} cumplió ${edadMin} años y pasó automáticamente de Oyente a 1.ª Etapa.`)
-                }
-                const aus = ausenciasPorAlumno[alum.id] || 0
-                const rol = window.appState.perfilActual?.rol
-                const tieneVisitasCat = cumpleVisitasCatequista(alum)
-                const tieneVisitaCoord = Boolean(alum.visita_coordinador_fecha)
-
-                if (!alum.retirado && aus > limAus) {
-                    if (!tieneVisitasCat && rol === 'catequista') {
-                        window.appState.agregarAlerta(`${alum.nombre_completo} tiene ${aus} ausencias: registra las ${reqVisitasCat} visitas del catequista.`)
-                    } else if (tieneVisitasCat && !tieneVisitaCoord && (rol === 'master' || rol === 'parroco')) {
-                        window.appState.agregarAlerta(`${alum.nombre_completo} tiene ${aus} ausencias y completó las visitas del catequista: requiere visita del coordinador.`)
-                    } else if (tieneVisitaCoord) {
-                        window.appState.agregarAlerta(`${alum.nombre_completo} continúa con ausencias tras la visita del coordinador: opción de retiro habilitada.`)
-                    }
-                }
-            }
-
-            catequizandosCache = data
-            renderizarCatequizandos()
-            renderizarCandidatos3Etapa()
-            renderizarListaTomaAsistencia()
-            renderizarAsistencia()
-        }
-
-        function renderizarCatequizandos() {
-            const tbody = document.getElementById('tbodyCatequizandos')
-            const rol = window.appState.perfilActual?.rol
-            const limAus = Number(window.appState.configParroquia.limite_ausencias || 4)
-            const reqVisitasCat = Number(window.appState.configParroquia.visitas_catequista_requeridas || 2)
-            const textoFiltro = (document.getElementById('filtroCatTexto')?.value || '').trim().toLowerCase()
-            const etapaFiltro = document.getElementById('filtroCatEtapa')?.value || 'todas'
-            const estadoFiltro = document.getElementById('filtroCatEstado')?.value || 'todos'
-
-            const filtrados = catequizandosCache.filter(alum => {
-                const aus = ausenciasPorAlumno[alum.id] || 0
-                if (textoFiltro && !(alum.nombre_completo || '').toLowerCase().includes(textoFiltro) && !(alum.sector || '').toLowerCase().includes(textoFiltro)) return false
-                if (etapaFiltro !== 'todas' && alum.etapa_actual !== etapaFiltro) return false
-                if (estadoFiltro === 'activos' && (alum.retirado || alum.graduado)) return false
-                if (estadoFiltro === 'seguimiento' && (alum.retirado || aus <= limAus)) return false
-                if (estadoFiltro === 'graduados' && !alum.graduado) return false
-                if (estadoFiltro === 'retirados' && !alum.retirado) return false
-                return true
-            })
-
-            tbody.innerHTML = filtrados.map(alum => {
-                const edad = calcularEdad(alum.fecha_nacimiento)
-                const aus = ausenciasPorAlumno[alum.id] || 0
-                const v1 = Boolean(alum.visita_catequista_1_fecha)
-                const v2 = Boolean(alum.visita_catequista_2_fecha)
-                const vc = Boolean(alum.visita_coordinador_fecha)
-
-                let estadoVisitas = `${aus} aus.`
-                if (alum.retirado) estadoVisitas += ` · Retirado (${alum.fecha_retiro || ''}): ${alum.causa_retiro || 'Sin causa'}`
-                else if (aus > limAus && !v1) estadoVisitas += ' · Falta Visita 1 catequista'
-                else if (aus > limAus && reqVisitasCat >= 2 && v1 && !v2) estadoVisitas += ' · Falta Visita 2 catequista'
-                else if (aus > limAus && cumpleVisitasCatequista(alum) && !vc) estadoVisitas += ' · Notificado a Coordinador'
-                else if (aus > limAus && vc) estadoVisitas += ' · Visita Coord. hecha (puede retirar)'
-
-                const btnV1 = !alum.retirado && aus > limAus && !v1 ? `<button class="btn-naranja" onclick="registrarVisitaCatequista('${alum.id}', 1)" style="margin-bottom:3px;">Visita Cat. 1</button><br>` : ''
-                const btnV2 = !alum.retirado && aus > limAus && reqVisitasCat >= 2 && v1 && !v2 ? `<button class="btn-naranja" onclick="registrarVisitaCatequista('${alum.id}', 2)" style="margin-bottom:3px;">Visita Cat. 2</button><br>` : ''
-                const btnCoord = !alum.retirado && aus > limAus && cumpleVisitasCatequista(alum) && !vc && (rol === 'master' || rol === 'parroco') ? `<button class="btn-morado" onclick="registrarVisitaCoordinador('${alum.id}')" style="margin-bottom:3px;">Visita Coord.</button><br>` : ''
-                const btnRet = !alum.retirado && aus > limAus && vc ? `<button class="btn-rojo" onclick="retirarCatequizando('${alum.id}')">Retirar</button>` : ''
-
-                return `<tr>
-                    <td><strong>${alum.nombre_completo}</strong>${alum.graduado ? '<br><span style="color:#1b5e20; font-weight:bold;">Graduado</span>' : ''}${alum.lista_primera_comunion ? '<br><span style="color:#1565c0; font-weight:bold;">Primera Comunión</span>' : ''}</td>
-                    <td>${edad} años (${alum.etapa_actual === 'oyente' ? 'Oyente' : 'Regular'})</td>
-                    <td>${alum.sector || '-'}<br>${alum.telefono_representante || '-'}</td>
-                    <td>Etapa: <strong>${alum.etapa_actual}</strong><br>Inicio: ${alum.fecha_inicio_etapa || '-'}<br>Cierre: ${alum.fecha_cierre_etapa || '-'}</td>
-                    <td>Comunión: <input type="date" value="${alum.fecha_comunion || ''}" onchange="actualizarFechaSacramento('${alum.id}', 'fecha_comunion', this.value)"><br>Confirmación: <input type="date" value="${alum.fecha_confirmacion || ''}" onchange="actualizarFechaSacramento('${alum.id}', 'fecha_confirmacion', this.value)"></td>
-                    <td>${estadoVisitas}<br><button class="btn-gris" onclick="verHistorialVisita('${alum.id}')" style="margin-top:4px;">Ver historial</button></td>
-                    <td>${!alum.retirado ? `<button class="btn-azul" onclick="cerrarEtapaAlumno('${alum.id}')" style="margin-bottom:4px;">Cerrar etapa</button><br>` : ''}${btnV1}${btnV2}${btnCoord}${btnRet}</td>
-                </tr>`
-            }).join('')
-        }
-
-        window.verHistorialVisita = (id) => {
-            const alum = catequizandosCache.find(a => a.id === id)
-            if (!alum) return
-            document.getElementById('tituloHistorialVisita').textContent = `Historial de seguimiento · ${alum.nombre_completo}`
-            document.getElementById('contenidoHistorialVisita').innerHTML = `
-                <div><strong>Ausencias acumuladas:</strong> ${ausenciasPorAlumno[alum.id] || 0}</div>
-                <div><strong>Visita 1 Catequista:</strong> ${alum.visita_catequista_1_fecha || 'Pendiente'} — ${alum.visita_catequista_1_nota || '-'}</div>
-                <div><strong>Visita 2 Catequista:</strong> ${alum.visita_catequista_2_fecha || 'Pendiente'} — ${alum.visita_catequista_2_nota || '-'}</div>
-                <div><strong>Visita Coordinador:</strong> ${alum.visita_coordinador_fecha || 'Pendiente'} — ${alum.visita_coordinador_nota || '-'}</div>
-                <div><strong>Estado de retiro:</strong> ${alum.retirado ? `Retirado el ${alum.fecha_retiro || '-'} · Causa: ${alum.causa_retiro || '-'}` : 'Activo'}</div>
-            `
-            document.getElementById('boxHistorialVisita').style.display = 'block'
-        }
-
-        document.getElementById('btnCerrarHistorial')?.addEventListener('click', () => {
-            document.getElementById('boxHistorialVisita').style.display = 'none'
-        })
-
-        ;['filtroCatTexto', 'filtroCatEtapa', 'filtroCatEstado'].forEach(id => {
-            document.getElementById(id)?.addEventListener('input', renderizarCatequizandos)
-            document.getElementById(id)?.addEventListener('change', renderizarCatequizandos)
-        })
-              document.getElementById('btnGuardarCatequizando')?.addEventListener('click', async () => {
-            const nombre = document.getElementById('catNombre').value.trim()
-            const nac = document.getElementById('catNacimiento').value
-            const tel = document.getElementById('catTelefono').value.trim()
-            const sector = document.getElementById('catSector').value.trim()
-            let etapa = document.getElementById('catEtapa').value
-            const inicio = document.getElementById('catInicioEtapa').value || new Date().toISOString().slice(0, 10)
-            const edadMin = Number(window.appState.configParroquia.edad_minima_etapa || 9)
-
-            if (!nombre || !nac) return alert('Ingresa al menos nombre y fecha de nacimiento.')
-            const edad = calcularEdad(nac)
-            if (edad < edadMin && etapa !== 'oyente') {
-                alert(`Por tener menos de ${edadMin} años, se registrará como Oyente.`)
-                etapa = 'oyente'
-            }
-
-            const { error } = await supabase.from('catequizandos').insert({
-                nombre_completo: nombre, fecha_nacimiento: nac, telefono_representante: tel,
-                sector: sector, etapa_actual: etapa, fecha_inicio_etapa: inicio,
-                catequista_id: window.appState.perfilActual?.id || null
-            })
-            if (error) return alert('Error al guardar catequizando: ' + error.message)
-
-            document.getElementById('catNombre').value = ''
-            document.getElementById('catNacimiento').value = ''
-            document.getElementById('catTelefono').value = ''
-            document.getElementById('catSector').value = ''
-            cargarCatequizandos()
-        })
-
-        window.actualizarFechaSacramento = async (id, campo, valor) => {
-            await supabase.from('catequizandos').update({ [campo]: valor || null }).eq('id', id)
-        }
-
+    ['filtroCatTexto', 'filtroCatSacramento', 'filtroCatEtapa', 'filtroCatEstado'].forEach(id => {
+        document.getElementById(id).addEventListener('input', renderizarCatequizandos);
+        document.getElementById(id).addEventListener('change', renderizarCatequizandos);
+    });
         window.cerrarEtapaAlumno = async (id) => {
-            const alumno = catequizandosCache.find(a => a.id === id)
-            if (!alumno) return
-            const fechaCierre = new Date().toISOString().slice(0, 10)
-            await supabase.from('catequizandos').update({ fecha_cierre_etapa: fechaCierre }).eq('id', id)
+        const alumno = catequizandosCache.find(a => a.id === id);
+        if (!alumno) return;
+        const fechaCierre = new Date().toISOString().slice(0, 10);
+        await supabase.from('catequizandos').update({ fecha_cierre_etapa: fechaCierre }).eq('id', id);
 
-            if (alumno.etapa_actual === '1') {
-                if (confirm('¿Todos los catequizandos de esta 1.ª etapa promocionan?')) {
-                    if (confirm('¿Desea abrir la 2.ª etapa ahora?')) {
-                        await supabase.from('catequizandos').update({ etapa_actual: '2', fecha_inicio_etapa: fechaCierre }).eq('id', id)
-                    }
-                } else {
-                    const grupo = catequizandosCache.filter(a => a.etapa_actual === '1' && !a.retirado)
-                    loteCierrePendiente = { tipo: 'promocion_1', fechaCierre, alumnos: grupo }
-                    document.getElementById('textoPromocionSelectiva').textContent = 'Marca quiénes NO promocionan (quedarán en 1.ª etapa):'
-                    document.getElementById('listaCheckboxesEtapa').innerHTML = grupo.map(g => `<label style="display:block; margin:4px 0;"><input type="checkbox" class="chk-no-promo" value="${g.id}"> ${g.nombre_completo}</label>`).join('')
-                    document.getElementById('boxPromocionSelectiva').style.display = 'block'
-                    return
-                }
-            } else if (alumno.etapa_actual === '2') {
-                if (confirm('¿Todos los catequizandos de esta 2.ª etapa harán Primera Comunión?')) {
-                    await supabase.from('catequizandos').update({ lista_primera_comunion: true, etapa_actual: '3', fecha_inicio_etapa: fechaCierre }).eq('id', id)
-                } else {
-                    const grupo = catequizandosCache.filter(a => a.etapa_actual === '2' && !a.retirado)
-                    loteCierrePendiente = { tipo: 'comunion_2', fechaCierre, alumnos: grupo }
-                    document.getElementById('textoPromocionSelectiva').textContent = 'Marca quiénes NO harán Primera Comunión (los demás sí pasarán a Comunión):'
-                    document.getElementById('listaCheckboxesEtapa').innerHTML = grupo.map(g => `<label style="display:block; margin:4px 0;"><input type="checkbox" class="chk-no-promo" value="${g.id}"> ${g.nombre_completo}</label>`).join('')
-                    document.getElementById('boxPromocionSelectiva').style.display = 'block'
-                    return
-                }
-            } else if (alumno.etapa_actual === '4') {
-                await supabase.from('catequizandos').update({ graduado: true, listo_confirmacion: true }).eq('id', id)
-            }
-            cargarCatequizandos()
-        }
-
-        document.getElementById('btnConfirmarPromocion')?.addEventListener('click', async () => {
-            if (!loteCierrePendiente) return
-            const marcadosNo = new Set(Array.from(document.querySelectorAll('.chk-no-promo:checked')).map(cb => cb.value))
-            const { tipo, fechaCierre, alumnos } = loteCierrePendiente
-
-            for (const al of alumnos) {
-                if (marcadosNo.has(al.id)) continue
-                if (tipo === 'promocion_1' && confirm(`¿Abrir 2.ª etapa para ${al.nombre_completo}?`)) {
-                    await supabase.from('catequizandos').update({ etapa_actual: '2', fecha_inicio_etapa: fechaCierre }).eq('id', al.id)
-                } else if (tipo === 'comunion_2') {
-                    await supabase.from('catequizandos').update({ lista_primera_comunion: true, etapa_actual: '3', fecha_inicio_etapa: fechaCierre }).eq('id', al.id)
+        if (alumno.etapa_actual === '1') {
+            if (confirm('¿Todos promocionan?')) {
+                if (confirm('¿Abrir 2.ª etapa ahora?')) {
+                    await supabase.from('catequizandos').update({ etapa_actual: '2', fecha_inicio_etapa: fechaCierre }).eq('id', id);
                 }
             }
-            loteCierrePendiente = null
-            document.getElementById('boxPromocionSelectiva').style.display = 'none'
-            cargarCatequizandos()
-        })
-
-        function renderizarCandidatos3Etapa() {
-            const sectorUsuario = (window.appState.perfilActual?.sector || '').trim().toLowerCase()
-            const box = document.getElementById('boxSeleccionSector3')
-            const cont = document.getElementById('listaCandidatos3Etapa')
-            const candidatos = catequizandosCache.filter(a => !a.retirado && a.lista_primera_comunion && a.etapa_actual !== '3' && (!sectorUsuario || (a.sector || '').trim().toLowerCase() === sectorUsuario))
-            if (!candidatos.length) return (box.style.display = 'none')
-            box.style.display = 'block'
-            cont.innerHTML = candidatos.map(c => `<div style="margin:4px 0;"><span>${c.nombre_completo} (${c.sector || 'Sin sector'})</span><button class="btn-verde" onclick="incorporarA3Etapa('${c.id}')" style="margin-left:8px; padding:4px 8px; font-size:12px;">Incorporar a 3.ª Etapa</button></div>`).join('')
-        }
-
-        window.incorporarA3Etapa = async (id) => {
-            await supabase.from('catequizandos').update({ etapa_actual: '3', catequista_id: window.appState.perfilActual?.id || null, fecha_inicio_etapa: new Date().toISOString().slice(0, 10) }).eq('id', id)
-            cargarCatequizandos()
-        }
-
-        window.registrarVisitaCatequista = async (id, numeroVisita) => {
-            const nota = prompt(`Resumen de la Visita ${numeroVisita} del catequista:`)
-            if (nota === null) return
-            const campoFecha = numeroVisita === 1 ? 'visita_catequista_1_fecha' : 'visita_catequista_2_fecha'
-            const campoNota = numeroVisita === 1 ? 'visita_catequista_1_nota' : 'visita_catequista_2_nota'
-            const reqVisitasCat = Number(window.appState.configParroquia.visitas_catequista_requeridas || 2)
-            await supabase.from('catequizandos').update({ [campoFecha]: new Date().toISOString().slice(0, 10), [campoNota]: nota.trim() || 'Visita registrada', estado_seguimiento: numeroVisita >= reqVisitasCat ? 'notificado_coordinador' : 'visita_catequista_1' }).eq('id', id)
-            cargarCatequizandos()
-        }
-
-        window.registrarVisitaCoordinador = async (id) => {
-            const nota = prompt('Observación de la visita del coordinador al catequista y al catequizando:')
-            if (nota === null) return
-            await supabase.from('catequizandos').update({ visita_coordinador_fecha: new Date().toISOString().slice(0, 10), visita_coordinador_nota: nota.trim() || 'Visita de coordinador registrada', estado_seguimiento: 'visita_coordinador_hecha' }).eq('id', id)
-            cargarCatequizandos()
-        }
-
-        window.retirarCatequizando = async (id) => {
-            const causa = prompt('Indica la causa del retiro (quedará guardada junto con el historial de visitas):')
-            if (!causa || !causa.trim()) return alert('Debes indicar una causa para retirar al catequizando.')
-            await supabase.from('catequizandos').update({ retirado: true, fecha_retiro: new Date().toISOString().slice(0, 10), causa_retiro: causa.trim(), estado_seguimiento: 'retirado' }).eq('id', id)
-            cargarCatequizandos()
+        } else if (alumno.etapa_actual === '2') {
+            if (confirm('¿Todos harán Comunión?')) {
+                await supabase.from('catequizandos').update({ sacramento_realizar: 'Comunión', etapa_actual: '3', fecha_inicio_etapa: fechaCierre }).eq('id', id);
             }
-                    function renderizarListaTomaAsistencia() {
-            const tbody = document.getElementById('tbodyListaTomaAsistencia')
-            if (!tbody) return
-            const txt = (document.getElementById('filtroAsisTexto')?.value || '').trim().toLowerCase()
-            const etp = document.getElementById('filtroAsisEtapa')?.value || 'todas'
-
-            const activos = catequizandosCache.filter(a => {
-                if (a.retirado) return false
-                if (etp !== 'todas' && a.etapa_actual !== etp) return false
-                if (txt && !(a.nombre_completo || '').toLowerCase().includes(txt) && !(a.sector || '').toLowerCase().includes(txt)) return false
-                return true
-            })
-
-            tbody.innerHTML = activos.map(a => `
-                <tr data-cat-id="${a.id}">
-                    <td><input type="checkbox" class="chk-asis-presente" checked></td>
-                    <td><strong>${a.nombre_completo}</strong></td>
-                    <td>Etapa ${a.etapa_actual} · ${a.sector || '-'}</td>
-                    <td><input type="checkbox" class="chk-asis-justificado" title="Marcar solo si faltó con justificación"></td>
-                    <td><input type="text" class="inp-asis-obs" placeholder="Observación opcional"></td>
-                </tr>
-            `).join('')
+        } else if (alumno.etapa_actual === '4') {
+            await supabase.from('catequizandos').update({ graduado: true, sacramento_realizar: 'Confirmación' }).eq('id', id);
         }
+        await cargarCatequizandos();
+    };
 
-        ;['filtroAsisTexto', 'filtroAsisEtapa'].forEach(id => {
-            document.getElementById(id)?.addEventListener('input', renderizarListaTomaAsistencia)
-            document.getElementById(id)?.addEventListener('change', renderizarListaTomaAsistencia)
-        })
+    window.retirarCatequizando = async (id) => {
+        const causa = prompt('Indica la causa del retiro:');
+        if (!causa || !causa.trim()) return alert('Debes indicar una causa.');
+        await supabase.from('catequizandos').update({
+            retirado: true,
+            fecha_retiro: new Date().toISOString().slice(0, 10),
+            causa_retiro: causa.trim(),
+            estado_seguimiento: 'retirado'
+        }).eq('id', id);
+        await cargarCatequizandos();
+    };
 
-        function renderizarAsistencia() {
-            const tbody = document.getElementById('tbodyAsistencia')
-            if (!tbody) return
-            const mapaNombres = Object.fromEntries(catequizandosCache.map(a => [a.id, a.nombre_completo]))
-            const limAus = Number(window.appState.configParroquia.limite_ausencias || 4)
+    async function cargarCatequizandos() {
+        const { data, error } = await supabase.from('catequizandos').select('*').order('created_at', { ascending: false });
+        if (error) {
+            console.error('Error cargando catequizandos:', error);
+            return;
+        }
+        catequizandosCache = data || [];
+        renderizarCatequizandos();
+        renderizarListaTomaAsistencia();
+    }
+        document.getElementById('asisFecha').valueAsDate = new Date();
 
-            const mesesSet = new Set(asistenciaCache.filter(r => r.fecha).map(r => r.fecha.slice(0, 7)))
-            const temasSet = new Set(asistenciaCache.filter(r => r.tema_dado && r.tema_dado.trim()).map(r => r.tema_dado.trim().toLowerCase()))
-            const criticos = Object.values(ausenciasPorAlumno).filter(n => n > limAus).length
+    function renderizarListaTomaAsistencia() {
+        const tbody = document.getElementById('tbodyListaTomaAsistencia');
+        const qTexto = (document.getElementById('filtroAsisTexto').value || '').trim().toLowerCase();
+        const qEtapa = document.getElementById('filtroAsisEtapa').value;
+        tbody.innerHTML = '';
 
-            document.getElementById('metMesesClase').textContent = mesesSet.size
-            document.getElementById('metTemasDados').textContent = temasSet.size
-            document.getElementById('metAusenciasCriticas').textContent = criticos
-
-            tbody.innerHTML = asistenciaCache
-                .slice()
-                .sort((a, b) => (b.fecha || '').localeCompare(a.fecha || ''))
-                .slice(0, 60)
-                .map(reg => `
-                    <tr>
-                        <td>${reg.fecha || '-'}</td>
-                        <td>${mapaNombres[reg.catequizando_id] || reg.catequizando_id}</td>
-                        <td>${reg.tema_dado || '-'}</td>
-                        <td>${reg.estado}</td>
-                        <td>${reg.observacion || '-'}</td>
+        catequizandosCache
+            .filter(cz => !cz.retirado)
+            .filter(cz => qEtapa === 'todas' || String(cz.etapa_actual || '') === qEtapa)
+            .filter(cz => !qTexto || `${cz.nombre_completo || ''} ${cz.direccion || ''}`.toLowerCase().includes(qTexto))
+            .forEach(cz => {
+                tbody.innerHTML += `
+                    <tr data-cz-id="${cz.id}">
+                        <td><input type="checkbox" class="chk-asistio" checked></td>
+                        <td>${cz.nombre_completo || '-'}</td>
+                        <td>Etapa ${cz.etapa_actual || '-'} · ${cz.direccion || '-'}</td>
+                        <td><input type="checkbox" class="chk-justificado"></td>
+                        <td><input type="text" class="inp-obs-asis" placeholder="Observación"></td>
                     </tr>
-                `).join('')
-        }
+                `;
+            });
+    }
 
-        document.getElementById('btnGuardarAsistenciaGrupal')?.addEventListener('click', async () => {
-            const fecha = document.getElementById('asisFecha').value || new Date().toISOString().slice(0, 10)
-            const temaDado = document.getElementById('asisTema').value.trim()
-            const filas = Array.from(document.querySelectorAll('#tbodyListaTomaAsistencia tr'))
+    document.getElementById('btnGuardarAsistenciaGrupal').addEventListener('click', async () => {
+        const fecha = document.getElementById('asisFecha').value || new Date().toISOString().slice(0, 10);
+        const tema = document.getElementById('asisTema').value.trim();
+        if (!tema) return alert('Ingresa el tema dado en clase.');
 
-            if (!filas.length) return alert('No hay catequizandos visibles en la lista.')
-            if (!temaDado) return alert('Ingresa el tema dado en clase.')
+        const filas = Array.from(document.querySelectorAll('#tbodyListaTomaAsistencia tr'));
+        if (!filas.length) return alert('No hay catequizandos en la lista.');
 
-            const registros = filas.map(tr => {
-                const presente = tr.querySelector('.chk-asis-presente').checked
-                const justificado = tr.querySelector('.chk-asis-justificado').checked
-                const obs = tr.querySelector('.inp-asis-obs').value.trim()
-                const estado = presente ? 'presente' : (justificado ? 'ausente_justificado' : 'ausente')
-                return {
-                    catequizando_id: tr.dataset.catId,
-                    catequista_id: window.appState.perfilActual?.id || null,
-                    fecha,
-                    tema_dado: temaDado,
-                    estado,
-                    observacion: obs
-                }
-            })
+        const registros = filas.map(tr => {
+            const asistio = tr.querySelector('.chk-asistio')?.checked;
+            const justificado = tr.querySelector('.chk-justificado')?.checked;
+            const obs = tr.querySelector('.inp-obs-asis')?.value.trim() || null;
+            return {
+                fecha,
+                tema_dado: tema,
+                catequizando_id: tr.dataset.czId,
+                estado: asistio ? 'presente' : (justificado ? 'ausente_justificado' : 'ausente'),
+                observacion: obs
+            };
+        });
 
-            const { error } = await supabase.from('asistencia').insert(registros)
-            if (error) return alert('Error al guardar lista de asistencia: ' + error.message)
+        const { error } = await supabase.from('asistencia').insert(registros);
+        if (error) return alert('Error guardando asistencia: ' + error.message);
+        document.getElementById('asisTema').value = '';
+        await cargarAsistencia();
+    });
 
-            document.getElementById('asisTema').value = ''
-            alert(`Asistencia guardada para ${registros.length} catequizandos.`)
-            await cargarCatequizandos()
-            await cargarCatequistas()
-        })
-
-        window.eliminarCoordinador = async (id) => {
-            if (!confirm('¿Confirmas quitar el rol de coordinador a este usuario?')) return
-            await supabase.from('administradores').delete().eq('id', id)
-            cargarCatequistas()
-            }
-                   async function cargarCatequistas() {
-            const { data: catqs } = await supabase.from('catequistas').select('*').order('nombre_completo', { ascending: true })
-            catequistasCache = catqs || []
-
-            const rol = window.appState.perfilActual?.rol
-            if (rol !== 'master' && rol !== 'parroco') return
-
-            if (rol === 'parroco') {
-                document.getElementById('boxRolNuevoEquipo').style.display = 'flex'
-                document.getElementById('boxRolEditarEquipo').style.display = 'flex'
-
-                const { data: coords } = await supabase.from('administradores').select('*').eq('rol', 'master').order('nombre_completo', { ascending: true })
-                coordinadoresCache = coords || []
-                const boxCoord = document.getElementById('boxCoordinadoresParroco')
-                const listaCoord = document.getElementById('listaCoordinadoresParroco')
-                boxCoord.style.display = 'block'
-                listaCoord.innerHTML = coordinadoresCache.length
-                    ? coordinadoresCache.map(c => {
-                        const correoDest = c.correo_recuperacion || (c.correo_acceso && !c.correo_acceso.endsWith('@catequesis.local') ? c.correo_acceso : '')
-                        return `<div style="margin:6px 0; padding:6px; background:#fff; border-radius:4px; border:1px solid #ffe0b2;">
-                            <strong>${c.nombre_completo}</strong> · Usuario: <code>${c.usuario || c.correo_acceso || '-'}</code> · Sector: ${c.sector || '-'} · Estado: ${c.activo !== false ? 'Activo' : 'De baja'}
-                            <div style="margin-top:4px;">
-                                <button class="btn-azul" onclick="abrirEditarCoordinador('${c.id}')">Editar</button>
-                                <button class="btn-morado" onclick="cambiarPasswordCatequista('${c.id}', '${correoDest.replace(/'/g, "\\'")}')">Recuperar clave</button>
-                                <button class="btn-rojo" onclick="eliminarCoordinador('${c.id}')">Quitar rol</button>
-                            </div>
-                        </div>`
-                    }).join('')
-                    : 'No hay coordinadores registrados.'
-            } else {
-                document.getElementById('boxRolNuevoEquipo').style.display = 'none'
-                document.getElementById('boxRolEditarEquipo').style.display = 'none'
-                document.getElementById('boxCoordinadoresParroco').style.display = 'none'
-            }
-
-            const tbody = document.getElementById('tbodyCatequistas')
-            tbody.innerHTML = catequistasCache.map(catq => {
-                const regsCatq = asistenciaCache.filter(a => a.catequista_id === catq.id)
-                const meses = new Set(regsCatq.filter(r => r.fecha).map(r => r.fecha.slice(0, 7))).size
-                const temas = new Set(regsCatq.filter(r => r.tema_dado).map(r => r.tema_dado.trim().toLowerCase())).size
-
-                const hechosIds = new Set(talleresAsistenciaCache.filter(ta => ta.catequista_id === catq.id && ta.asistio).map(ta => ta.taller_id))
-                const hechos = talleresCache.filter(t => hechosIds.has(t.id)).map(t => t.titulo)
-                const faltantes = talleresCache.filter(t => !hechosIds.has(t.id)).map(t => t.titulo)
-
-                const correoDestino = catq.correo_recuperacion || (catq.correo_acceso && !catq.correo_acceso.endsWith('@catequesis.local') ? catq.correo_acceso : '')
-                const horarioTxt = `${catq.dia_catequesis ? catq.dia_catequesis + ' · ' : ''}${catq.hora_catequesis ? catq.hora_catequesis.slice(0, 5) : 'Sin hora'}`
-
-                return `<tr>
-                    <td><strong>${catq.nombre_completo}</strong><br>Usuario: <code>${catq.usuario || '-'}</code><br><small>Recup.: ${correoDestino || 'Sin correo'}</small></td>
-                    <td>${catq.sector || '-'}<br>${catq.lugar || '-'}<br><small><strong>Horario:</strong> ${horarioTxt}</small></td>
-                    <td>Ciclo ${catq.ciclo_actual || 1}<br>${catq.activo !== false ? 'Activo' : 'De baja'}</td>
-                    <td>
-                        <span class="tag-ok">Hechos (${hechos.length}): ${hechos.join(', ') || 'Ninguno'}</span><br>
-                        <span class="tag-pend" style="margin-top:4px;">Faltan (${faltantes.length}): ${faltantes.join(', ') || 'Al día'}</span>
-                    </td>
-                    <td>${meses} meses / ${temas} temas</td>
-                    <td>
-                        <button class="btn-azul" onclick="abrirEditarCatequista('${catq.id}')" style="margin-bottom:4px;">Editar</button>
-                        <button class="btn-morado" onclick="cambiarPasswordCatequista('${catq.id}', '${correoDestino.replace(/'/g, "\\'")}')" style="margin-bottom:4px;">Recuperar clave</button><br>
-                        ${catq.activo !== false
-                            ? `<button class="btn-rojo" onclick="darBajaCatequista('${catq.id}')">Dar de baja</button>`
-                            : `<button class="btn-verde" onclick="reintegrarCatequista('${catq.id}', ${catq.ciclo_actual || 1})" style="padding:6px 10px; font-size:12px;">Reintegrar</button>`
-                        }
-                    </td>
-                </tr>`
-            }).join('')
-        }
-
-        document.getElementById('btnCrearCatequista')?.addEventListener('click', async () => {
-            const rolActual = window.appState.perfilActual?.rol
-            const rolSeleccionado = rolActual === 'parroco' ? document.getElementById('catqRolAsignar').value : 'catequista'
-            const nombre = document.getElementById('catqNombre').value.trim()
-            const usuario = document.getElementById('catqUsuario').value.trim().toLowerCase().replace(/\s+/g, '.')
-            const password = document.getElementById('catqPassword').value
-            const correoPropio = document.getElementById('catqCorreo').value.trim()
-            const correoRecup = document.getElementById('catqCorreoRecup').value.trim()
-            const sector = document.getElementById('catqSector').value.trim()
-            const lugar = document.getElementById('catqLugar').value
-            const diaCatequesis = document.getElementById('catqDia').value.trim()
-            const horaCatequesis = document.getElementById('catqHora').value || null
-
-            if (!nombre || !usuario || !password) return alert('Completa nombre, usuario y contraseña.')
-            const emailAuth = correoPropio || `${usuario}@catequesis.local`
-
-            const { data: authData, error: authError } = await supabase.auth.signUp({ email: emailAuth, password })
-            if (authError) return alert('Error creando acceso: ' + authError.message)
-
-            if (rolSeleccionado === 'master') {
-                const { error: adminErr } = await supabase.from('administradores').insert({
-                    auth_user_id: authData?.user?.id || null,
-                    usuario,
-                    correo_acceso: emailAuth,
-                    correo_recuperacion: correoRecup || correoPropio || null,
-                    nombre_completo: nombre,
-                    rol: 'master',
-                    sector: sector || null,
-                    activo: true
-                })
-                if (adminErr) return alert('Error registrando coordinador: ' + adminErr.message)
-                alert(`Coordinador General registrado. Usuario de acceso: ${usuario}`)
-            } else {
-                const { error: dbError } = await supabase.from('catequistas').insert({
-                    auth_user_id: authData?.user?.id || null,
-                    usuario,
-                    correo_acceso: emailAuth,
-                    correo_recuperacion: correoRecup || correoPropio || null,
-                    nombre_completo: nombre,
-                    rol: 'catequista',
-                    sector,
-                    lugar,
-                    dia_catequesis: diaCatequesis || null,
-                    hora_catequesis: horaCatequesis,
-                    parroquia: window.appState.configParroquia.nombre_parroquia,
-                    activo: true,
-                    ciclo_actual: 1
-                })
-                if (dbError) return alert('Error registrando catequista: ' + dbError.message)
-                alert(`Catequista registrado. Usuario de acceso: ${usuario}`)
-            }
-
-            ;['catqNombre', 'catqUsuario', 'catqPassword', 'catqCorreo', 'catqCorreoRecup', 'catqSector', 'catqDia', 'catqHora'].forEach(id => (document.getElementById(id).value = ''))
-            if (document.getElementById('catqRolAsignar')) document.getElementById('catqRolAsignar').value = 'catequista'
-            await cargarCatequistas()
-        })
-
-        window.abrirEditarCatequista = (id) => {
-            const catq = catequistasCache.find(c => c.id === id)
-            if (!catq) return
-            document.getElementById('tituloEditarEquipo').textContent = 'Editar registro de catequista'
-            document.getElementById('editCatqId').value = catq.id
-            document.getElementById('editCatqTablaOrigen').value = 'catequistas'
-            document.getElementById('editCatqRol').value = 'catequista'
-            document.getElementById('editCatqNombre').value = catq.nombre_completo || ''
-            document.getElementById('editCatqUsuario').value = catq.usuario || ''
-            document.getElementById('editCatqCorreoRecup').value = catq.correo_recuperacion || ''
-            document.getElementById('editCatqSector').value = catq.sector || ''
-            document.getElementById('editCatqLugar').value = catq.lugar || 'Capilla'
-            document.getElementById('editCatqDia').value = catq.dia_catequesis || ''
-            document.getElementById('editCatqHora').value = catq.hora_catequesis ? catq.hora_catequesis.slice(0, 5) : ''
-            document.getElementById('editCatqActivo').value = String(catq.activo !== false)
-            document.getElementById('boxEditarCatequista').style.display = 'block'
-        }
-
-        window.abrirEditarCoordinador = (id) => {
-            const coord = coordinadoresCache.find(c => c.id === id)
-            if (!coord) return
-            document.getElementById('tituloEditarEquipo').textContent = 'Editar registro de Coordinador General (Master)'
-            document.getElementById('editCatqId').value = coord.id
-            document.getElementById('editCatqTablaOrigen').value = 'administradores'
-            document.getElementById('editCatqRol').value = 'master'
-            document.getElementById('editCatqNombre').value = coord.nombre_completo || ''
-            document.getElementById('editCatqUsuario').value = coord.usuario || ''
-            document.getElementById('editCatqCorreoRecup').value = coord.correo_recuperacion || ''
-            document.getElementById('editCatqSector').value = coord.sector || ''
-            document.getElementById('editCatqLugar').value = 'Capilla'
-            document.getElementById('editCatqDia').value = ''
-            document.getElementById('editCatqHora').value = ''
-            document.getElementById('editCatqActivo').value = String(coord.activo !== false)
-            document.getElementById('boxEditarCatequista').style.display = 'block'
-        }
-
-        document.getElementById('btnCancelarEdicionCatequista')?.addEventListener('click', () => {
-            document.getElementById('boxEditarCatequista').style.display = 'none'
-        })
-
-        document.getElementById('btnGuardarEdicionCatequista')?.addEventListener('click', async () => {
-            const id = document.getElementById('editCatqId').value
-            const origen = document.getElementById('editCatqTablaOrigen').value
-            const rolActual = window.appState.perfilActual?.rol
-            const rolDestino = rolActual === 'parroco' ? document.getElementById('editCatqRol').value : 'catequista'
-            const nombre = document.getElementById('editCatqNombre').value.trim()
-            const usuario = document.getElementById('editCatqUsuario').value.trim().toLowerCase()
-            const correoRecup = document.getElementById('editCatqCorreoRecup').value.trim()
-            const sector = document.getElementById('editCatqSector').value.trim()
-            const lugar = document.getElementById('editCatqLugar').value
-            const diaCatequesis = document.getElementById('editCatqDia').value.trim()
-            const horaCatequesis = document.getElementById('editCatqHora').value || null
-            const activo = document.getElementById('editCatqActivo').value === 'true'
-
-            if (!id || !nombre || !usuario) return alert('Nombre y usuario son obligatorios.')
-
-            if (origen === 'catequistas' && rolDestino === 'catequista') {
-                const { error } = await supabase.from('catequistas').update({
-                    nombre_completo: nombre, usuario, correo_recuperacion: correoRecup || null,
-                    sector, lugar, dia_catequesis: diaCatequesis || null, hora_catequesis: horaCatequesis, activo
-                }).eq('id', id)
-                if (error) return alert('Error actualizando catequista: ' + error.message)
-            } else if (origen === 'administradores' && rolDestino === 'master') {
-                const { error } = await supabase.from('administradores').update({
-                    nombre_completo: nombre, usuario, correo_recuperacion: correoRecup || null,
-                    sector: sector || null, activo
-                }).eq('id', id)
-                if (error) return alert('Error actualizando coordinador: ' + error.message)
-            } else if (origen === 'catequistas' && rolDestino === 'master') {
-                const catq = catequistasCache.find(c => c.id === id)
-                const { error: insErr } = await supabase.from('administradores').insert({
-                    auth_user_id: catq?.auth_user_id || null,
-                    usuario,
-                    correo_acceso: catq?.correo_acceso || `${usuario}@catequesis.local`,
-                    correo_recuperacion: correoRecup || null,
-                    nombre_completo: nombre,
-                    rol: 'master',
-                    sector: sector || null,
-                    activo
-                })
-                if (insErr) return alert('Error promoviendo a coordinador: ' + insErr.message)
-                await supabase.from('catequistas').delete().eq('id', id)
-            } else if (origen === 'administradores' && rolDestino === 'catequista') {
-                const coord = coordinadoresCache.find(c => c.id === id)
-                const { error: insErr } = await supabase.from('catequistas').insert({
-                    auth_user_id: coord?.auth_user_id || null,
-                    usuario,
-                    correo_acceso: coord?.correo_acceso || `${usuario}@catequesis.local`,
-                    correo_recuperacion: correoRecup || null,
-                    nombre_completo: nombre,
-                    rol: 'catequista',
-                    sector,
-                    lugar,
-                    dia_catequesis: diaCatequesis || null,
-                    hora_catequesis: horaCatequesis,
-                    parroquia: window.appState.configParroquia.nombre_parroquia,
-                    activo,
-                    ciclo_actual: 1
-                })
-                if (insErr) return alert('Error reasignando como catequista: ' + insErr.message)
-                await supabase.from('administradores').delete().eq('id', id)
-            }
-
-            document.getElementById('boxEditarCatequista').style.display = 'none'
-            alert('Registro y rol actualizados.')
-            cargarCatequistas()
-        })
-
-        window.cambiarPasswordCatequista = async (id, correoDestino) => {
-            if (!correoDestino) {
-                return alert('No tiene correo propio ni correo alternativo configurado. Edita su registro y añade un correo alternativo para enviarle el enlace de recuperación.')
-            }
-            if (!confirm(`Se enviará el enlace de recuperación de clave al correo alternativo registrado: ${correoDestino}\n¿Continuar?`)) return
-            const { error } = await supabase.auth.resetPasswordForEmail(correoDestino, { redirectTo: window.location.origin + '/index.html' })
-            if (error) return alert('Error al enviar enlace: ' + error.message)
-            alert(`Enlace de recuperación enviado a ${correoDestino}.`)
-        }
-
-        window.darBajaCatequista = async (id) => {
-            if (!confirm('¿Dar de baja a este catequista?')) return
-            await supabase.from('catequistas').update({ activo: false }).eq('id', id)
-            cargarCatequistas()
-        }
-
-        window.reintegrarCatequista = async (id, cicloActual) => {
-            await supabase.from('catequistas').update({ activo: true, ciclo_actual: Number(cicloActual || 1) + 1 }).eq('id', id)
-            cargarCatequistas()
-            }
-                  async function cargarFormacion() {
-            const { data: talleres } = await supabase.from('talleres').select('*').order('fecha', { ascending: true })
-            talleresCache = talleres || []
-
-            const { data: asisTalleres } = await supabase.from('talleres_asistencia').select('*')
-            talleresAsistenciaCache = asisTalleres || []
-
-            const perfil = window.appState.perfilActual
-            const esAdmin = perfil?.rol === 'master' || perfil?.rol === 'parroco'
-            const hoy = new Date().toISOString().slice(0, 10)
-
-            const misHechos = new Set(talleresAsistenciaCache.filter(a => a.catequista_id === perfil?.id && a.asistio).map(a => a.taller_id))
-            const pendientes = talleresCache.filter(t => !misHechos.has(t.id))
-            const completados = talleresCache.filter(t => misHechos.has(t.id))
-
-            document.getElementById('resumenTalleresUsuario').innerHTML = `
-                <div><span class="tag-ok">Realizados (${completados.length}):</span> ${completados.map(t => t.titulo).join(', ') || 'Ninguno aún'}</div>
-                <div style="margin-top:4px;"><span class="tag-pend">Pendientes / Por hacer (${pendientes.length}):</span> ${pendientes.map(t => `${t.titulo} (${t.fecha || 'sin fecha'})`).join(', ') || '¡Estás al día!'}</div>
-            `
-
-            document.getElementById('listaTalleres').innerHTML = talleresCache.map(t => {
-                const esProximo = t.fecha >= hoy
-                const hecho = misHechos.has(t.id)
-                if (esProximo && !hecho) window.appState.agregarAlerta(`Taller pendiente: "${t.titulo}" (${t.fecha}) — Temas: ${t.temas || 'Por definir'}`)
-                const asistentesCount = talleresAsistenciaCache.filter(a => a.taller_id === t.id && a.asistio).length
-
-                return `<div style="padding:10px; border:1px solid #ddd; border-radius:6px; margin-bottom:8px; background:${hecho ? '#f1f8e9' : '#fffde7'};">
-                    <strong>${t.titulo}</strong> · Fecha: ${t.fecha || '-'} · ${hecho ? '<span class="tag-ok">Realizado</span>' : '<span class="tag-pend">Pendiente</span>'}<br>
-                    <span><strong>Temas:</strong> ${t.temas || '-'}</span><br>
-                    <small>Catequistas asistentes registrados: ${asistentesCount}</small>
-                    ${esAdmin ? `<br><button class="btn-azul" onclick="abrirAsistenciaTaller('${t.id}')" style="margin-top:6px;">Pasar / Ver asistencia de catequistas</button>` : ''}
-                </div>`
-            }).join('')
-
-            const { data: quizzes } = await supabase.from('quizzes').select('*')
-            document.getElementById('listaQuizzes').innerHTML = (quizzes || []).map(q =>
-                `<div style="padding:8px; border:1px solid #e0e0e0; border-radius:5px; margin-bottom:6px;"><strong>Tema: ${q.tema || '-'}</strong><br><span>Pregunta: ${q.pregunta || '-'}</span> · <em>Clave: ${q.respuesta_clave || '-'}</em></div>`
-            ).join('')
-        }
-
-        window.abrirAsistenciaTaller = (tallerId) => {
-            const taller = talleresCache.find(t => t.id === tallerId)
-            if (!taller) return
-            document.getElementById('tallerAsisId').value = taller.id
-            document.getElementById('tituloAsistenciaTaller').textContent = `Asistencia al taller: ${taller.titulo}`
-
-            const sectores = Array.from(new Set(catequistasCache.map(c => c.sector).filter(Boolean)))
-            document.getElementById('filtroTallerCatqSector').innerHTML = '<option value="">Todos los sectores</option>' + sectores.map(s => `<option value="${s}">${s}</option>`).join('')
-
-            renderizarListaAsistenciaTaller()
-            document.getElementById('boxAsistenciaTaller').style.display = 'block'
-        }
-
-        function renderizarListaAsistenciaTaller() {
-            const tallerId = document.getElementById('tallerAsisId').value
-            const txt = (document.getElementById('filtroTallerCatqTexto')?.value || '').trim().toLowerCase()
-            const sec = document.getElementById('filtroTallerCatqSector')?.value || ''
-            const lug = document.getElementById('filtroTallerCatqLugar')?.value || ''
-
-            const presentesSet = new Set(talleresAsistenciaCache.filter(a => a.taller_id === tallerId && a.asistio).map(a => a.catequista_id))
-
-            const filtrados = catequistasCache.filter(c => {
-                if (c.activo === false) return false
-                if (txt && !(c.nombre_completo || '').toLowerCase().includes(txt) && !(c.usuario || '').toLowerCase().includes(txt)) return false
-                if (sec && (c.sector || '') !== sec) return false
-                if (lug && (c.lugar || '') !== lug) return false
-                return true
-            })
-
-            document.getElementById('tbodyAsistenciaTaller').innerHTML = filtrados.map(c => `
-                <tr data-catq-id="${c.id}">
-                    <td><input type="checkbox" class="chk-taller-asistio" ${presentesSet.has(c.id) ? 'checked' : ''}></td>
-                    <td><strong>${c.nombre_completo}</strong> (${c.usuario || '-'})</td>
-                    <td>${c.sector || '-'}</td>
-                    <td>${c.lugar || '-'}</td>
+    async function cargarAsistencia() {
+        const { data } = await supabase.from('asistencia').select('*, catequizandos(nombre_completo)').order('fecha', { ascending: false });
+        asistenciaCache = data || [];
+        const tbody = document.getElementById('tbodyAsistencia');
+        tbody.innerHTML = '';
+        asistenciaCache.slice(0, 50).forEach(as => {
+            tbody.innerHTML += `
+                <tr>
+                    <td>${as.fecha}</td>
+                    <td>${as.catequizandos?.nombre_completo || '-'}</td>
+                    <td>${as.tema_dado || '-'}</td>
+                    <td>${as.estado}</td>
+                    <td>${as.observacion || '-'}</td>
                 </tr>
-            `).join('')
-        }
+            `;
+        });
+        const temasUnicos = new Set(asistenciaCache.map(a => (a.tema_dado || '').trim().toLowerCase()).filter(Boolean));
+        const mesesUnicos = new Set(asistenciaCache.map(a => (a.fecha || '').slice(0, 7)).filter(Boolean));
+        document.getElementById('metTemasDados').textContent = temasUnicos.size;
+        document.getElementById('metMesesClase').textContent = mesesUnicos.size;
+    }
 
-        ;['filtroTallerCatqTexto', 'filtroTallerCatqSector', 'filtroTallerCatqLugar'].forEach(id => {
-            document.getElementById(id)?.addEventListener('input', renderizarListaAsistenciaTaller)
-            document.getElementById(id)?.addEventListener('change', renderizarListaAsistenciaTaller)
-        })
+    async function cargarCatequistas() {
+        const { data } = await supabase.from('catequistas').select('*').order('created_at', { ascending: false });
+        catequistasCache = data || [];
+        const tbody = document.getElementById('tbodyCatequistas');
+        tbody.innerHTML = '';
+        catequistasCache.forEach(cq => {
+            tbody.innerHTML += `
+                <tr>
+                    <td>${cq.nombre_completo || '-'}<br><small>${cq.usuario || cq.correo_acceso || ''}</small></td>
+                    <td>${cq.sector || '-'} · ${cq.lugar || '-'}<br><small>${cq.dia || ''} ${cq.hora || ''}</small></td>
+                    <td>${cq.activo === false ? 'Inactivo' : 'Activo'}</td>
+                    <td>${cq.talleres_realizados || 0} / ${cq.talleres_pendientes || 0}</td>
+                    <td>${cq.meses_impartidos || 0} meses</td>
+                    <td>-</td>
+                </tr>
+            `;
+        });
+                }
+        function obtenerFilasReporte() {
+        const sacFiltro = document.getElementById('filtroReporteSacramento').value;
+        const desde = document.getElementById('repDesde').value;
+        const hasta = document.getElementById('repHasta').value;
 
-        document.getElementById('btnCerrarAsistenciaTaller')?.addEventListener('click', () => {
-            document.getElementById('boxAsistenciaTaller').style.display = 'none'
-        })
-
-        document.getElementById('btnGuardarAsistenciaTaller')?.addEventListener('click', async () => {
-            const tallerId = document.getElementById('tallerAsisId').value
-            const filas = Array.from(document.querySelectorAll('#tbodyAsistenciaTaller tr'))
-            if (!tallerId || !filas.length) return
-
-            const payload = filas.map(tr => ({
-                taller_id: tallerId,
-                catequista_id: tr.dataset.catqId,
-                asistio: tr.querySelector('.chk-taller-asistio').checked
-            }))
-
-            const { error } = await supabase.from('talleres_asistencia').upsert(payload, { onConflict: 'taller_id,catequista_id' })
-            if (error) return alert('Error guardando asistencia del taller: ' + error.message)
-
-            alert('Asistencia al taller guardada.')
-            await cargarFormacion()
-            await cargarCatequistas()
-        })
-
-        document.getElementById('btnCrearTaller')?.addEventListener('click', async () => {
-            const titulo = document.getElementById('tallerTitulo').value.trim()
-            const fecha = document.getElementById('tallerFecha').value
-            const temas = document.getElementById('tallerTemas').value.trim()
-            if (!titulo || !fecha) return alert('Ingresa título y fecha del taller.')
-            const { error } = await supabase.from('talleres').insert({ titulo, fecha, temas, creado_por: window.appState.perfilActual?.id || null })
-            if (error) return alert('Error al guardar taller: ' + error.message)
-            document.getElementById('tallerTitulo').value = ''
-            document.getElementById('tallerTemas').value = ''
-            await cargarFormacion()
-            await cargarCatequistas()
-        })
-
-        document.getElementById('btnGuardarQuiz')?.addEventListener('click', async () => {
-            const tema = document.getElementById('quizTema').value.trim()
-            const pregunta = document.getElementById('quizPregunta').value.trim()
-            const respuestaClave = document.getElementById('quizRespuesta').value.trim()
-            if (!tema || !pregunta) return alert('Ingresa tema y pregunta.')
-            const { error } = await supabase.from('quizzes').insert({ tema, pregunta, respuesta_clave: respuestaClave })
-            if (error) return alert('Error al guardar quiz: ' + error.message)
-            document.getElementById('quizTema').value = ''
-            document.getElementById('quizPregunta').value = ''
-            document.getElementById('quizRespuesta').value = ''
-            cargarFormacion()
-        })
-
-        document.getElementById('btnGenerarReporte')?.addEventListener('click', () => {
-            const tipo = document.getElementById('filtroReporteTipo').value
-            const cont = document.getElementById('salidaReporte')
-            const limAus = Number(window.appState.configParroquia.limite_ausencias || 4)
-
-            if (tipo === 'catequizandos') {
-                ultimoReporteFilas = catequizandosCache.map(a => ({ Nombre: a.nombre_completo, Etapa: a.etapa_actual, Sector: a.sector || '-', Estado: a.retirado ? 'Retirado' : (a.graduado ? 'Graduado' : 'Activo') }))
-            } else if (tipo === 'comunion_confirmacion') {
-                ultimoReporteFilas = catequizandosCache.filter(a => a.lista_primera_comunion || a.fecha_comunion || a.graduado || a.fecha_confirmacion).map(a => ({ Nombre: a.nombre_completo, Comunion: a.fecha_comunion || (a.lista_primera_comunion ? 'Marcado' : '-'), Confirmacion_Graduado: a.fecha_confirmacion || (a.graduado ? 'Graduado' : '-') }))
-            } else if (tipo === 'retiros_visitas') {
-                ultimoReporteFilas = catequizandosCache.filter(a => (ausenciasPorAlumno[a.id] || 0) > limAus || a.retirado).map(a => ({ Nombre: a.nombre_completo, Ausencias: ausenciasPorAlumno[a.id] || 0, Visita_Cat_1: a.visita_catequista_1_fecha || '-', Visita_Cat_2: a.visita_catequista_2_fecha || '-', Visita_Coord: a.visita_coordinador_fecha || '-', Retiro_Causa: a.retirado ? `${a.fecha_retiro || ''} — ${a.causa_retiro || ''}` : 'No retirado' }))
-            } else if (tipo === 'catequistas') {
-                ultimoReporteFilas = catequistasCache.map(c => {
-                    const hechos = talleresAsistenciaCache.filter(ta => ta.catequista_id === c.id && ta.asistio).length
-                    const horario = `${c.dia_catequesis ? c.dia_catequesis + ' ' : ''}${c.hora_catequesis ? c.hora_catequesis.slice(0, 5) : 'Sin hora'}`
-                    return { Nombre: c.nombre_completo, Usuario: c.usuario || '-', Sector_Lugar: `${c.sector || '-'} / ${c.lugar || '-'}`, Horario: horario, Talleres_Hechos: `${hechos} de ${talleresCache.length}`, Estado: c.activo !== false ? 'Activo' : 'De baja' }
-                })
-            }
-
-            if (!ultimoReporteFilas.length) return (cont.innerHTML = '<p>No hay registros para este reporte.</p>')
-            const cols = Object.keys(ultimoReporteFilas[0])
-            cont.innerHTML = `<table><thead><tr>${cols.map(c => `<th>${c}</th>`).join('')}</tr></thead><tbody>` +
-                ultimoReporteFilas.map(row => `<tr>${cols.map(c => `<td>${row[c]}</td>`).join('')}</tr>`).join('') + `</tbody></table>`
-        })
-
-        document.getElementById('btnExportarCsv')?.addEventListener('click', () => {
-            if (!ultimoReporteFilas.length) return alert('Primero genera un reporte para exportar.')
-            const cols = Object.keys(ultimoReporteFilas[0])
-            const csvLines = [cols.join(','), ...ultimoReporteFilas.map(row => cols.map(c => `"${String(row[c] ?? '').replace(/"/g, '""')}"`).join(','))]
-            const blob = new Blob([csvLines.join('\n')], { type: 'text/csv;charset=utf-8;' })
-            const url = URL.createObjectURL(blob)
-            const a = document.createElement('a')
-            a.href = url
-            a.download = `reporte_${document.getElementById('filtroReporteTipo').value}.csv`
-            a.click()
-            URL.revokeObjectURL(url)
-        })
-
-        document.getElementById('btnImprimirReporte')?.addEventListener('click', () => window.print())
-
-        function leerArchivoComoDataUrl(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader()
-                reader.onload = () => resolve(reader.result)
-                reader.onerror = reject
-                reader.readAsDataURL(file)
+        return catequizandosCache
+            .filter(cz => {
+                const sacNorm = normalizarSacramento(cz.sacramento_realizar);
+                if (sacFiltro !== 'todos' && sacNorm !== sacFiltro) return false;
+                const fInsc = cz.fecha_inscripcion_sacramento || '';
+                if (desde && (!fInsc || fInsc < desde)) return false;
+                if (hasta && (!fInsc || fInsc > hasta)) return false;
+                return true;
             })
+            .map(cz => {
+                const sacNorm = normalizarSacramento(cz.sacramento_realizar);
+                const edadVal = cz.edad ?? calcularEdad(cz.fecha_nacimiento) ?? '';
+                return {
+                    catequizando_nombre: cz.nombre_completo || '',
+                    catequizando_nacimiento: cz.fecha_nacimiento || '',
+                    catequizando_edad: edadVal,
+                    catequizando_cedula: cz.cedula || '',
+                    catequizando_direccion: cz.direccion || cz.sector || '',
+                    catequizando_telefono: cz.telefono || '',
+                    representante_nombre: cz.representante_nombre || cz.representante || '',
+                    representante_cedula: cz.representante_cedula || '',
+                    representante_direccion: cz.representante_direccion || '',
+                    representante_telefono: cz.telefono_representante || '',
+                    representante_parentesco: cz.representante_parentesco || '',
+                    sacramento_realizar: sacNorm,
+                    fecha_inscripcion_sacramento: cz.fecha_inscripcion_sacramento || ''
+                };
+            });
+    }
+
+    function generarReporte() {
+        const cont = document.getElementById('salidaReporte');
+        ultimoReporteFilas = obtenerFilasReporte();
+
+        if (!ultimoReporteFilas.length) {
+            cont.innerHTML = '<p style="color:#555;">No hay catequizandos que coincidan con el filtro seleccionado.</p>';
+            return;
         }
 
-        document.getElementById('btnGuardarConfigParroquia')?.addEventListener('click', async () => {
-            const archivoDiocesis = document.getElementById('cfgLogoDiocesisArchivo')?.files?.[0]
-            const archivo1 = document.getElementById('cfgLogoPrincipalArchivo')?.files?.[0]
-            const archivo2 = document.getElementById('cfgLogoSecundarioArchivo')?.files?.[0]
+        cont.innerHTML = `
+            <table>
+                <thead>
+                    <tr>
+                        <th>Catequizando</th>
+                        <th>Nac. / Edad / Cédula</th>
+                        <th>Dirección / Teléfono</th>
+                        <th>Representante</th>
+                        <th>Cédula / Dir. / Tel. / Parentesco</th>
+                        <th>Sacramento</th>
+                        <th>Fecha inscripción sacramento</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${ultimoReporteFilas.map(r => `
+                        <tr>
+                            <td><strong>${r.catequizando_nombre}</strong></td>
+                            <td>${r.catequizando_nacimiento || '-'} · ${r.catequizando_edad || '-'} años · ${r.catequizando_cedula || '-'}</td>
+                            <td>${r.catequizando_direccion || '-'} · ${r.catequizando_telefono || '-'}</td>
+                            <td>${r.representante_nombre || '-'}</td>
+                            <td>${r.representante_cedula || '-'} · ${r.representante_direccion || '-'} · ${r.representante_telefono || '-'} · ${r.representante_parentesco || '-'}</td>
+                            <td><strong>${r.sacramento_realizar}</strong></td>
+                            <td>${r.fecha_inscripcion_sacramento || '-'}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+    }
 
-            const nombreDiocesis = document.getElementById('cfgNombreDiocesis').value.trim()
-            localStorage.setItem('nombre_diocesis', nombreDiocesis)
+    document.getElementById('btnGenerarReporte').addEventListener('click', generarReporte);
+    document.getElementById('btnImprimirReporte').addEventListener('click', () => window.print());
 
-            let logoDiocesisUrl = window.appState.configParroquia.logo_diocesis_url || localStorage.getItem('logo_diocesis') || null
-            let logo1DataUrl = window.appState.configParroquia.logo_parroquia_url || localStorage.getItem('logo_parroquia_1') || null
-            let logo2DataUrl = localStorage.getItem('logo_parroquia_2') || null
+    document.getElementById('btnExportarCsv').addEventListener('click', () => {
+        if (!ultimoReporteFilas.length) generarReporte();
+        if (!ultimoReporteFilas.length) return alert('No hay datos para exportar.');
 
-            if (archivoDiocesis) {
-                logoDiocesisUrl = await leerArchivoComoDataUrl(archivoDiocesis)
-                localStorage.setItem('logo_diocesis', logoDiocesisUrl)
-            }
-            if (archivo1) {
-                logo1DataUrl = await leerArchivoComoDataUrl(archivo1)
-                localStorage.setItem('logo_parroquia_1', logo1DataUrl)
-            }
-            if (archivo2) {
-                logo2DataUrl = await leerArchivoComoDataUrl(archivo2)
-                localStorage.setItem('logo_parroquia_2', logo2DataUrl)
-            }
+        const headers = [
+            'Nombre y apellido catequizando', 'Fecha nacimiento', 'Edad', 'Cédula catequizando',
+            'Dirección catequizando', 'Teléfono catequizando', 'Nombre y apellido representante',
+            'Cédula representante', 'Dirección representante', 'Teléfono representante',
+            'Parentesco', 'Sacramento a realizar', 'Fecha inscripción al sacramento'
+        ];
+        const rows = ultimoReporteFilas.map(r => [
+            r.catequizando_nombre, r.catequizando_nacimiento, r.catequizando_edad, r.catequizando_cedula,
+            r.catequizando_direccion, r.catequizando_telefono, r.representante_nombre,
+            r.representante_cedula, r.representante_direccion, r.representante_telefono,
+            r.representante_parentesco, r.sacramento_realizar, r.fecha_inscripcion_sacramento
+        ].map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(','));
 
-            const payload = {
-                nombre_diocesis: nombreDiocesis || null,
-                nombre_parroquia: document.getElementById('cfgNombreParroquia').value.trim() || 'Parroquia',
-                localidad: document.getElementById('cfgLocalidad').value.trim() || '',
-                limite_ausencias: Number(document.getElementById('cfgLimiteAusencias').value || 4),
-                visitas_catequista_requeridas: Number(document.getElementById('cfgVisitasCat').value || 2),
-                edad_minima_etapa: Number(document.getElementById('cfgEdadMinima').value || 9),
-                logo_diocesis_url: logoDiocesisUrl,
-                logo_parroquia_url: logo1DataUrl,
-                actualizado_en: new Date().toISOString()
-            }
+        const blob = new Blob(['\uFEFF' + [headers.join(','), ...rows].join('\n')], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'reporte_inscripcion_sacramentos.csv';
+        a.click();
+        URL.revokeObjectURL(url);
+    });
 
-            if (window.appState.configParroquia.id) {
-                await supabase.from('configuracion_parroquia').update(payload).eq('id', window.appState.configParroquia.id)
-            } else {
-                const { data } = await supabase.from('configuracion_parroquia').insert(payload).select().single()
-                if (data) window.appState.configParroquia.id = data.id
-            }
-
-            aplicarLogosEnPantalla(logoDiocesisUrl, logo1DataUrl, logo2DataUrl)
-            alert('Configuración de diócesis, parroquia y logos guardados.')
-            await cargarConfigParroquia()
-            await cargarCatequizandos()
-        })
-
-        document.getElementById('btnCerrarSesion')?.addEventListener('click', async () => {
-            try { await supabase.auth.signOut() } finally { window.location.href = './index.html' }
-        })
-
-        document.querySelectorAll('.card-menu').forEach(card => {
-            card.addEventListener('click', () => {
-                document.querySelectorAll('.card-menu').forEach(c => c.classList.remove('active'))
-                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'))
-                card.classList.add('active')
-                const target = document.getElementById(card.dataset.tab)
-                if (target) target.classList.add('active')
-            })
-        })
-
-        async function iniciarPanel() {
-            const badge = document.getElementById('badgeRol')
-            try {
-                const { data: { session }, error: sessError } = await supabase.auth.getSession()
-                if (sessError || !session) return (window.location.href = './index.html')
-
-                await cargarConfigParroquia().catch(() => {})
-
-                let { data: adminPerfil } = await supabase.from('administradores').select('*').eq('auth_user_id', session.user.id).maybeSingle()
-                if (!adminPerfil && session.user.email) {
-                    const porCorreo = await supabase.from('administradores').select('*').ilike('correo_acceso', session.user.email).maybeSingle()
-                    adminPerfil = porCorreo.data || null
-                }
-
-                let perfilActual = null
-                if (adminPerfil) {
-                    perfilActual = { ...adminPerfil, rol: adminPerfil.rol || 'master' }
-                } else {
-                    let { data: catqPerfil } = await supabase.from('catequistas').select('*').eq('auth_user_id', session.user.id).maybeSingle()
-                    if (!catqPerfil && session.user.email) {
-                        const porCorreoCatq = await supabase.from('catequistas').select('*').ilike('correo_acceso', session.user.email).maybeSingle()
-                        catqPerfil = porCorreoCatq.data || null
-                    }
-                    perfilActual = catqPerfil ? { ...catqPerfil, rol: 'catequista' } : { nombre_completo: session.user.email, rol: 'catequista', ciclo_actual: 1 }
-                }
-
-                const rolLimpio = String(perfilActual.rol || '').trim().toLowerCase()
-                if (rolLimpio.includes('parroco') || rolLimpio.includes('párroco')) {
-                    perfilActual.rol = 'parroco'
-                } else if (rolLimpio.includes('master') || rolLimpio.includes('coord')) {
-                    perfilActual.rol = 'master'
-                } else {
-                    perfilActual.rol = 'catequista'
-                }
-
-                window.appState.perfilActual = perfilActual
-                const etiquetasRol = { parroco: 'Párroco', master: 'Coordinador General (Master)', catequista: 'Catequista' }
-                if (badge) badge.textContent = `${etiquetasRol[perfilActual.rol] || perfilActual.rol} · ${perfilActual.nombre_completo}`
-
-                document.getElementById('textoBienvenida').textContent =
-                    perfilActual.rol === 'parroco'
-                        ? 'Supervisión parroquial: gestiona coordinadores, catequistas, talleres, etapas, reportes y configuración.'
-                        : perfilActual.rol === 'master'
-                            ? 'Coordinación general: gestiona catequistas, talleres, asistencia, bajas/reintegros, reportes y configuración.'
-                            : 'Gestiona tus catequizandos, asistencia semanal, etapas, visitas y revisa tus talleres pendientes.'
-
-                if (perfilActual.rol === 'catequista') {
-                    document.getElementById('cardCatequistas')?.classList.add('oculto-por-rol')
-                    document.getElementById('cardPersonalizacion')?.classList.add('oculto-por-rol')
-                    document.getElementById('boxFormCrearTaller')?.classList.add('oculto-por-rol')
-                }
-
-                await cargarCatequizandos().catch(() => {})
-                await cargarFormacion().catch(() => {})
-                await cargarCatequistas().catch(() => {})
-            } catch (err) {
-                if (badge) badge.textContent = 'Error al verificar perfil'
-                window.appState?.agregarAlerta?.('Error al iniciar el panel: ' + (err?.message || err))
-            }
-        }
-
-        iniciarPanel()
-    </script>
+    const sesionOk = await verificarSesionYPerfil();
+    if (sesionOk) {
+        await cargarCatequistas();
+        await cargarCatequizandos();
+        await cargarAsistencia();
+        generarReporte();
+    }
+</script>
 </body>
 </html>
