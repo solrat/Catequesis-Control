@@ -55,7 +55,7 @@
             margin-bottom: 14px;
             font-size: 13px;
         }
-                .menu-grid {
+               .menu-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 12px;
@@ -117,7 +117,7 @@
     </style>
 </head>
 <body>
-    <header>
+  <header>
     <div class="header-info">
         <h2 id="tituloSistema" style="margin:0; font-size:18px;">Sistema de Catequesis</h2>
         <span id="badgeRolUsuario" class="badge-rol">Verificando perfil...</span>
@@ -137,7 +137,7 @@
     <div class="menu-grid">
         <div class="card-menu active" data-tab="sec-catequizandos">
             <h3>Catequizandos</h3>
-            <p>Inscripción completa, representante y sacramentos.</p>
+            <p>Inscripción, consulta por catequista y sacramentos.</p>
         </div>
         <div class="card-menu" data-tab="sec-asistencia">
             <h3>Asistencia</h3>
@@ -145,7 +145,7 @@
         </div>
         <div class="card-menu" id="cardCatequistas" data-tab="sec-catequistas">
             <h3>Catequistas</h3>
-            <p>Equipo de catequistas, horarios y estado.</p>
+            <p>Consulta por zona (Rural/Urbano), horarios y equipo.</p>
         </div>
         <div class="card-menu" data-tab="sec-formacion">
             <h3>Talleres y Reportes</h3>
@@ -154,7 +154,7 @@
     </div>
 
     <div class="modulo-box">
-              <section id="sec-catequizandos" class="section active">
+             <section id="sec-catequizandos" class="section active">
             <h3>Catequizandos — Boleta de Inscripción</h3>
 
             <div style="background:#f9fbf9; border:1px solid #d7e2d7; border-radius:8px; padding:12px; margin-bottom:14px;">
@@ -210,7 +210,7 @@
                     </div>
                 </div>
 
-                <strong style="display:block; margin-bottom:8px; color:#1b5e20;">3. Sacramento y etapa</strong>
+                <strong style="display:block; margin-bottom:8px; color:#1b5e20;">3. Sacramento, etapa y catequista asignado</strong>
                 <div class="form-grid">
                     <div class="campo-box">
                         <label for="catSacramento">Sacramento a realizar</label>
@@ -238,11 +238,36 @@
                         <input type="date" id="catInicioEtapa">
                     </div>
                     <div class="campo-box">
+                        <label for="catCatequistaAsignado">Catequista asignado</label>
+                        <select id="catCatequistaAsignado">
+                            <option value="">-- Seleccionar catequista --</option>
+                        </select>
+                    </div>
+                    <div class="campo-box">
                         <button type="button" class="btn-verde" id="btnGuardarCatequizando">Guardar Catequizando</button>
                     </div>
                 </div>
             </div>
-                          <div class="form-grid">
+                     <div style="background:#f1f8e9; border:1px solid #c5e1a5; border-radius:8px; padding:12px; margin-bottom:14px;">
+                <strong style="display:block; margin-bottom:8px; color:#1b5e20;">Consultar catequizandos asignados por catequista</strong>
+                <div class="form-grid" style="margin-bottom:6px;">
+                    <div class="campo-box">
+                        <label for="consultaCatequistaSelect">Seleccionar catequista</label>
+                        <select id="consultaCatequistaSelect">
+                            <option value="todos">Todos los catequistas</option>
+                        </select>
+                    </div>
+                    <div class="campo-box">
+                        <label for="consultaCatequistaTexto">Buscar por nombre de catequista</label>
+                        <input type="text" id="consultaCatequistaTexto" placeholder="Escribe el nombre del catequista...">
+                    </div>
+                </div>
+                <div id="resumenConsultaCatequista" style="font-size:13px; color:#2e7d32; font-weight:bold;">
+                    Mostrando todos los catequizandos registrados.
+                </div>
+            </div>
+
+            <div class="form-grid">
                 <input type="text" id="filtroCatTexto" placeholder="Buscar por nombre, cédula, representante o dirección...">
                 <select id="filtroCatSacramento">
                     <option value="todos">Todos los sacramentos (Comunión / Confirmación)</option>
@@ -266,25 +291,6 @@
                 </select>
             </div>
 
-            <div id="boxHistorialVisita" class="panel-detalle">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <strong id="tituloHistorialVisita">Historial de seguimiento</strong>
-                    <button type="button" class="btn-gris" id="btnCerrarHistorial">Cerrar</button>
-                </div>
-                <div id="contenidoHistorialVisita" style="margin-top:8px; font-size:13px; line-height:1.5;"></div>
-            </div>
-
-            <div id="boxSeleccionSector3" class="panel-detalle" style="background:#f1f8e9; border-color:#c5e1a5;">
-                <strong>3.ª Etapa — Incorporar catequizandos con Comunión en tu sector:</strong>
-                <div id="listaCandidatos3Etapa" style="margin-top:8px;"></div>
-            </div>
-
-            <div id="boxPromocionSelectiva" class="panel-detalle" style="background:#e8f5e9; border-color:#a5d6a7;">
-                <p id="textoPromocionSelectiva" style="margin:0 0 8px 0; font-weight:bold;"></p>
-                <div id="listaCheckboxesEtapa"></div>
-                <button type="button" class="btn-verde" id="btnConfirmarPromocion" style="margin-top:8px;">Aplicar selección</button>
-            </div>
-
             <div class="tabla-wrap">
                 <table>
                     <thead>
@@ -293,16 +299,17 @@
                             <th>Edad / Cédula / Nac.</th>
                             <th>Dirección / Teléfono</th>
                             <th>Representante</th>
+                            <th>Catequista asignado</th>
                             <th>Sacramento / Inscripción</th>
-                            <th>Etapa / Seguimiento</th>
+                            <th>Etapa / Estado</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody id="tbodyCatequizandos"></tbody>
                 </table>
             </div>
-              </section>
-               <section id="sec-asistencia" class="section">
+             </section>
+              <section id="sec-asistencia" class="section">
             <h3>Asistencia de Catequizandos</h3>
             <div class="metricas-grid">
                 <div class="metrica-card"><strong id="metMesesClase">0</strong><span>Meses de clase impartidos</span></div>
@@ -361,6 +368,28 @@
 
         <section id="sec-catequistas" class="section">
             <h3>Catequistas y Coordinadores</h3>
+
+            <div style="background:#f1f8e9; border:1px solid #c5e1a5; border-radius:8px; padding:12px; margin-bottom:14px;">
+                <strong style="display:block; margin-bottom:8px; color:#1b5e20;">Consultar catequistas existentes por zona o nombre</strong>
+                <div class="form-grid" style="margin-bottom:6px;">
+                    <div class="campo-box">
+                        <label for="consultaZonaCatequista">Filtrar por zona</label>
+                        <select id="consultaZonaCatequista">
+                            <option value="todas">Todas las zonas (Rural / Urbano)</option>
+                            <option value="Rural">Rural</option>
+                            <option value="Urbano">Urbano</option>
+                        </select>
+                    </div>
+                    <div class="campo-box">
+                        <label for="consultaNombreCatequista">Buscar catequista por nombre o sector</label>
+                        <input type="text" id="consultaNombreCatequista" placeholder="Nombre del catequista o sector...">
+                    </div>
+                </div>
+                <div id="resumenConsultaZona" style="font-size:13px; color:#2e7d32; font-weight:bold;">
+                    Mostrando todos los catequistas.
+                </div>
+            </div>
+
             <div id="boxCoordinadoresParroco" class="panel-detalle" style="background:#fff3e0; border-color:#ffcc80;">
                 <strong>Coordinadores Generales / Master activos:</strong>
                 <div id="listaCoordinadoresParroco" style="margin-top:8px;"></div>
@@ -400,68 +429,22 @@
                 <div class="campo-box"><button type="button" class="btn-verde" id="btnCrearCatequista">Registrar Integrante</button></div>
             </div>
 
-            <div id="boxEditarCatequista" class="panel-detalle" style="background:#e3f2fd; border-color:#90caf9;">
-                <strong id="tituloEditarEquipo" style="display:block; margin-bottom:8px; color:#0d47a1;">Editar registro</strong>
-                <input type="hidden" id="editCatqId">
-                <input type="hidden" id="editCatqTablaOrigen" value="catequistas">
-                <div class="form-grid">
-                    <div class="campo-box" id="boxRolEditarEquipo" style="display:none;">
-                        <label for="editCatqRol">Rol en el sistema</label>
-                        <select id="editCatqRol">
-                            <option value="catequista">Catequista</option>
-                            <option value="master">Coordinador General (Master)</option>
-                        </select>
-                    </div>
-                    <div class="campo-box"><label for="editCatqNombre">Nombre completo</label><input type="text" id="editCatqNombre"></div>
-                    <div class="campo-box"><label for="editCatqUsuario">Usuario de acceso</label><input type="text" id="editCatqUsuario"></div>
-                    <div class="campo-box"><label for="editCatqCorreoRecup">Correo alternativo recuperación</label><input type="email" id="editCatqCorreoRecup"></div>
-                    <div class="campo-box">
-                        <label for="editCatqZona">Zona (Rural / Urbano)</label>
-                        <select id="editCatqZona">
-                            <option value="Urbano">Urbano</option>
-                            <option value="Rural">Rural</option>
-                        </select>
-                    </div>
-                    <div class="campo-box"><label for="editCatqSector">Sector</label><input type="text" id="editCatqSector"></div>
-                    <div class="campo-box">
-                        <label for="editCatqLugar">Lugar</label>
-                        <select id="editCatqLugar">
-                            <option value="Capilla">Capilla</option>
-                            <option value="Escuela">Escuela</option>
-                            <option value="Casa particular">Casa particular</option>
-                        </select>
-                    </div>
-                    <div class="campo-box"><label for="editCatqDia">Día de catequesis</label><input type="text" id="editCatqDia"></div>
-                    <div class="campo-box"><label for="editCatqHora">Hora de catequesis</label><input type="time" id="editCatqHora"></div>
-                    <div class="campo-box">
-                        <label for="editCatqActivo">Estado</label>
-                        <select id="editCatqActivo">
-                            <option value="true">Activo</option>
-                            <option value="false">De baja</option>
-                        </select>
-                    </div>
-                </div>
-                <button type="button" class="btn-verde" id="btnGuardarEdicionCatequista">Guardar cambios</button>
-                <button type="button" class="btn-gris" id="btnCancelarEdicionCatequista">Cancelar</button>
-            </div>
-
             <div class="tabla-wrap">
                 <table>
                     <thead>
                         <tr>
                             <th>Catequista / Usuario</th>
-                            <th>Zona, Sector, Lugar y Horario</th>
-                            <th>Ciclo / Estado</th>
-                            <th>Talleres</th>
-                            <th>Meses / Temas</th>
-                            <th>Acciones</th>
+                            <th>Zona (Rural/Urbano)</th>
+                            <th>Sector, Lugar y Horario</th>
+                            <th>Estado</th>
+                            <th>Niños asignados</th>
                         </tr>
                     </thead>
                     <tbody id="tbodyCatequistas"></tbody>
                 </table>
             </div>
         </section>
-              <section id="sec-formacion" class="section">
+                <section id="sec-formacion" class="section">
             <h3>Talleres, Quiz, Reportes y Configuración</h3>
             <div class="form-grid">
                 <div class="campo-box"><label for="tallerTitulo">Título del taller</label><input type="text" id="tallerTitulo" placeholder="Título"></div>
@@ -505,8 +488,7 @@
                     <select id="filtroReporteTipo">
                         <option value="sacramentos">Inscripción a Comunión / Confirmación</option>
                         <option value="catequizandos">Ficha completa Catequizandos y Representantes</option>
-                        <option value="retiros_visitas">Retiros y Visitas por Ausencias</option>
-                        <option value="catequistas">Cumplimiento de Catequistas</option>
+                        <option value="catequistas">Catequistas por Zona y Niños Asignados</option>
                     </select>
                 </div>
             </div>
@@ -531,7 +513,7 @@
         </section>
     </div>
 </div>
-   <script type="module">
+<script type="module">
     import { supabase } from './supabaseClient.js';
 
     window.appState = {
@@ -563,6 +545,12 @@
 
     function normalizarSacramento(valor) {
         return valor === 'Confirmación' ? 'Confirmación' : 'Comunión';
+    }
+
+    function obtenerNombreCatequista(catequistaId) {
+        if (!catequistaId) return 'Sin asignar';
+        const encontrado = catequistasCache.find(c => String(c.id) === String(catequistaId));
+        return encontrado?.nombre_completo || 'Sin asignar';
     }
 
     function actualizarBannerBienvenida(session) {
@@ -629,7 +617,6 @@
         const esParrocoOMaster = ['parroco', 'master'].includes(window.appState.rolActual);
         document.getElementById('boxConfigParroquia').style.display = esParrocoOMaster ? 'block' : 'none';
         document.getElementById('boxRolNuevoEquipo').style.display = window.appState.rolActual === 'parroco' ? 'flex' : 'none';
-        document.getElementById('boxRolEditarEquipo').style.display = window.appState.rolActual === 'parroco' ? 'flex' : 'none';
         document.getElementById('boxCoordinadoresParroco').style.display = window.appState.rolActual === 'parroco' ? 'block' : 'none';
 
         const boxRegistroEquipo = document.getElementById('boxRegistroEquipo');
@@ -653,7 +640,36 @@
             if (card.dataset.tab === 'sec-formacion') generarReporte();
         });
     });
-          document.getElementById('catNacimiento').addEventListener('change', (e) => {
+        function poblarSelectoresCatequistas() {
+        const selForm = document.getElementById('catCatequistaAsignado');
+        const selConsulta = document.getElementById('consultaCatequistaSelect');
+        const valorPrevioConsulta = selConsulta.value;
+
+        selForm.innerHTML = '<option value="">-- Seleccionar catequista --</option>';
+        selConsulta.innerHTML = '<option value="todos">Todos los catequistas</option>';
+
+        catequistasCache.forEach(cq => {
+            const label = `${cq.nombre_completo || 'Sin nombre'}${cq.zona ? ` (${cq.zona})` : ''}`;
+            const opt1 = document.createElement('option');
+            opt1.value = cq.id;
+            opt1.textContent = label;
+            selForm.appendChild(opt1);
+
+            const opt2 = document.createElement('option');
+            opt2.value = cq.id;
+            opt2.textContent = label;
+            selConsulta.appendChild(opt2);
+        });
+
+        if (window.appState.rolActual === 'catequista' && window.appState.perfilActual?.id) {
+            selForm.value = window.appState.perfilActual.id;
+        }
+        if (valorPrevioConsulta) {
+            selConsulta.value = valorPrevioConsulta;
+        }
+    }
+
+    document.getElementById('catNacimiento').addEventListener('change', (e) => {
         if (e.target.value) {
             document.getElementById('catEdad').value = calcularEdad(e.target.value);
         }
@@ -678,6 +694,7 @@
 
         let etapa = document.getElementById('catEtapa').value;
         const inicio = document.getElementById('catInicioEtapa').value || new Date().toISOString().slice(0, 10);
+        const catAsignadoId = document.getElementById('catCatequistaAsignado').value || window.appState.perfilActual?.id || null;
         const edadMin = Number(window.appState.configParroquia.edad_minima_etapa || 9);
 
         if (!nombre || !nac) return alert('Ingresa al menos nombre y apellido y fecha de nacimiento.');
@@ -705,7 +722,7 @@
             fecha_inscripcion_sacramento: fechaInscripcionSacramento,
             etapa_actual: etapa,
             fecha_inicio_etapa: inicio,
-            catequista_id: window.appState.perfilActual?.id || null
+            catequista_id: catAsignadoId
         });
 
         if (error) return alert('Error al guardar catequizando: ' + error.message);
@@ -726,27 +743,46 @@
         const qSac = document.getElementById('filtroCatSacramento').value;
         const qEtapa = document.getElementById('filtroCatEtapa').value;
         const qEstado = document.getElementById('filtroCatEstado').value;
+        const selCatId = document.getElementById('consultaCatequistaSelect').value;
+        const qCatNombre = (document.getElementById('consultaCatequistaTexto').value || '').trim().toLowerCase();
+
         const tbody = document.getElementById('tbodyCatequizandos');
         tbody.innerHTML = '';
 
         const lista = catequizandosCache.filter(cz => {
             const sacNorm = normalizarSacramento(cz.sacramento_realizar);
+            const nombreCatAsignado = obtenerNombreCatequista(cz.catequista_id).toLowerCase();
+
+            if (selCatId !== 'todos' && String(cz.catequista_id || '') !== String(selCatId)) return false;
+            if (qCatNombre && !nombreCatAsignado.includes(qCatNombre)) return false;
             if (qSac !== 'todos' && sacNorm !== qSac) return false;
             if (qEtapa !== 'todas' && String(cz.etapa_actual || '') !== qEtapa) return false;
             if (qEstado === 'activos' && cz.retirado) return false;
             if (qEstado === 'retirados' && !cz.retirado) return false;
             if (qEstado === 'graduados' && !cz.graduado) return false;
             if (qEstado === 'seguimiento' && (!cz.estado_seguimiento || cz.estado_seguimiento === 'normal')) return false;
+
             if (qTexto) {
                 const blob = [
                     cz.nombre_completo, cz.cedula, cz.direccion, cz.telefono,
                     cz.representante_nombre || cz.representante, cz.representante_cedula,
-                    cz.representante_direccion, cz.representante_parentesco, sacNorm
+                    cz.representante_direccion, cz.representante_parentesco,
+                    sacNorm, nombreCatAsignado
                 ].filter(Boolean).join(' ').toLowerCase();
                 if (!blob.includes(qTexto)) return false;
             }
             return true;
         });
+
+        const resumenEl = document.getElementById('resumenConsultaCatequista');
+        if (selCatId !== 'todos') {
+            const nomSel = obtenerNombreCatequista(selCatId);
+            resumenEl.textContent = `Catequista "${nomSel}": ${lista.length} niño(s)/catequizando(s) asignado(s).`;
+        } else if (qCatNombre) {
+            resumenEl.textContent = `Búsqueda por catequista "${qCatNombre}": ${lista.length} catequizando(s) encontrado(s).`;
+        } else {
+            resumenEl.textContent = `Mostrando ${lista.length} catequizando(s) en total.`;
+        }
 
         lista.forEach(cz => {
             const edadMostrada = cz.edad ?? calcularEdad(cz.fecha_nacimiento) ?? '-';
@@ -765,6 +801,7 @@
                     <td>Edad: ${edadMostrada}<br>CI: ${cz.cedula || '-'}<br>Nac: ${cz.fecha_nacimiento || '-'}</td>
                     <td>Dir: ${cz.direccion || cz.sector || '-'}<br>Tel: ${cz.telefono || '-'}</td>
                     <td>${repInfo || '-'}</td>
+                    <td><strong>${obtenerNombreCatequista(cz.catequista_id)}</strong></td>
                     <td><strong>${normalizarSacramento(cz.sacramento_realizar)}</strong><br>Insc: ${cz.fecha_inscripcion_sacramento || '-'}</td>
                     <td>Etapa: ${cz.etapa_actual || '-'}<br>${cz.retirado ? 'Retirado: ' + (cz.causa_retiro || '') : (cz.estado_seguimiento || 'Activo')}</td>
                     <td>
@@ -776,11 +813,14 @@
         });
     }
 
-    ['filtroCatTexto', 'filtroCatSacramento', 'filtroCatEtapa', 'filtroCatEstado'].forEach(id => {
+    [
+        'filtroCatTexto', 'filtroCatSacramento', 'filtroCatEtapa', 'filtroCatEstado',
+        'consultaCatequistaSelect', 'consultaCatequistaTexto'
+    ].forEach(id => {
         document.getElementById(id).addEventListener('input', renderizarCatequizandos);
         document.getElementById(id).addEventListener('change', renderizarCatequizandos);
     });
-          window.cerrarEtapaAlumno = async (id) => {
+       window.cerrarEtapaAlumno = async (id) => {
         const alumno = catequizandosCache.find(a => a.id === id);
         if (!alumno) return;
         const fechaCierre = new Date().toISOString().slice(0, 10);
@@ -823,8 +863,9 @@
         catequizandosCache = data || [];
         renderizarCatequizandos();
         renderizarListaTomaAsistencia();
-       }
-           document.getElementById('asisFecha').valueAsDate = new Date();
+        renderizarCatequistas();
+    }
+        document.getElementById('asisFecha').valueAsDate = new Date();
 
     function renderizarListaTomaAsistencia() {
         const tbody = document.getElementById('tbodyListaTomaAsistencia');
@@ -954,11 +995,10 @@
             });
             if (errAdmin) return alert('Error guardando coordinador: ' + errAdmin.message);
         } else {
-            const { error: errCat } = await supabase.from('catequistas').insert({
+            const payloadCat = {
                 nombre_completo: nombre,
                 usuario,
                 correo_acceso: correoAcceso,
-                correo_propio: correoPropio || null,
                 correo_recuperacion: correoRecup || null,
                 zona: zona || null,
                 sector: sector || null,
@@ -968,7 +1008,10 @@
                 rol: 'catequista',
                 activo: true,
                 auth_user_id: authUid
-            });
+            };
+            if (correoPropio) payloadCat.correo_propio = correoPropio;
+
+            const { error: errCat } = await supabase.from('catequistas').insert(payloadCat);
             if (errCat) return alert('Error guardando catequista: ' + errCat.message);
         }
 
@@ -978,25 +1021,66 @@
         await cargarCatequistas();
     });
 
-    async function cargarCatequistas() {
-        const { data } = await supabase.from('catequistas').select('*').order('created_at', { ascending: false });
-        catequistasCache = data || [];
+    function renderizarCatequistas() {
+        const zonaFiltro = document.getElementById('consultaZonaCatequista').value;
+        const nombreFiltro = (document.getElementById('consultaNombreCatequista').value || '').trim().toLowerCase();
         const tbody = document.getElementById('tbodyCatequistas');
         tbody.innerHTML = '';
-        catequistasCache.forEach(cq => {
+
+        const filtrados = catequistasCache.filter(cq => {
+            const zonaVal = String(cq.zona || '').trim();
+            if (zonaFiltro !== 'todas' && zonaVal.toLowerCase() !== zonaFiltro.toLowerCase()) return false;
+            if (nombreFiltro) {
+                const texto = `${cq.nombre_completo || ''} ${cq.usuario || ''} ${cq.sector || ''} ${cq.lugar || ''}`.toLowerCase();
+                if (!texto.includes(nombreFiltro)) return false;
+            }
+            return true;
+        });
+
+        const resumenZona = document.getElementById('resumenConsultaZona');
+        if (zonaFiltro !== 'todas') {
+            resumenZona.textContent = `Zona ${zonaFiltro}: ${filtrados.length} catequista(s) encontrado(s).`;
+        } else if (nombreFiltro) {
+            resumenZona.textContent = `Búsqueda "${nombreFiltro}": ${filtrados.length} catequista(s) encontrado(s).`;
+        } else {
+            resumenZona.textContent = `Mostrando ${filtrados.length} catequista(s) registrados.`;
+        }
+
+        filtrados.forEach(cq => {
+            const ninosAsignados = catequizandosCache
+                .filter(cz => !cz.retirado && String(cz.catequista_id || '') === String(cq.id))
+                .map(cz => cz.nombre_completo)
+                .filter(Boolean);
+
+            const detalleNinos = ninosAsignados.length
+                ? `<strong>${ninosAsignados.length} asignado(s):</strong><br>${ninosAsignados.join(', ')}`
+                : 'Sin niños asignados';
+
             tbody.innerHTML += `
                 <tr>
                     <td>${cq.nombre_completo || '-'}<br><small>${cq.usuario || cq.correo_acceso || ''}</small></td>
-                    <td><strong>${cq.zona || 'Sin zona'}</strong> · ${cq.sector || '-'} · ${cq.lugar || '-'}<br><small>${cq.dia || ''} ${cq.hora || ''}</small></td>
+                    <td><strong>${cq.zona || 'Sin especificar'}</strong></td>
+                    <td>${cq.sector || '-'} · ${cq.lugar || '-'}<br><small>${cq.dia || ''} ${cq.hora || ''}</small></td>
                     <td>${cq.activo === false ? 'Inactivo' : 'Activo'}</td>
-                    <td>${cq.talleres_realizados || 0} / ${cq.talleres_pendientes || 0}</td>
-                    <td>${cq.meses_impartidos || 0} meses</td>
-                    <td>-</td>
+                    <td>${detalleNinos}</td>
                 </tr>
             `;
         });
-       }
-           function obtenerFilasReporte() {
+    }
+
+    ['consultaZonaCatequista', 'consultaNombreCatequista'].forEach(id => {
+        document.getElementById(id).addEventListener('input', renderizarCatequistas);
+        document.getElementById(id).addEventListener('change', renderizarCatequistas);
+    });
+
+    async function cargarCatequistas() {
+        const { data } = await supabase.from('catequistas').select('*').order('created_at', { ascending: false });
+        catequistasCache = data || [];
+        poblarSelectoresCatequistas();
+        renderizarCatequistas();
+        renderizarCatequizandos();
+    }
+       function obtenerFilasReporte() {
         const sacFiltro = document.getElementById('filtroReporteSacramento').value;
         const desde = document.getElementById('repDesde').value;
         const hasta = document.getElementById('repHasta').value;
@@ -1020,6 +1104,7 @@
                     catequizando_cedula: cz.cedula || '',
                     catequizando_direccion: cz.direccion || cz.sector || '',
                     catequizando_telefono: cz.telefono || '',
+                    catequista_asignado: obtenerNombreCatequista(cz.catequista_id),
                     representante_nombre: cz.representante_nombre || cz.representante || '',
                     representante_cedula: cz.representante_cedula || '',
                     representante_direccion: cz.representante_direccion || '',
@@ -1047,6 +1132,7 @@
                         <th>Catequizando</th>
                         <th>Nac. / Edad / Cédula</th>
                         <th>Dirección / Teléfono</th>
+                        <th>Catequista</th>
                         <th>Representante</th>
                         <th>Cédula / Dir. / Tel. / Parentesco</th>
                         <th>Sacramento</th>
@@ -1059,6 +1145,7 @@
                             <td><strong>${r.catequizando_nombre}</strong></td>
                             <td>${r.catequizando_nacimiento || '-'} · ${r.catequizando_edad || '-'} años · ${r.catequizando_cedula || '-'}</td>
                             <td>${r.catequizando_direccion || '-'} · ${r.catequizando_telefono || '-'}</td>
+                            <td><strong>${r.catequista_asignado || '-'}</strong></td>
                             <td>${r.representante_nombre || '-'}</td>
                             <td>${r.representante_cedula || '-'} · ${r.representante_direccion || '-'} · ${r.representante_telefono || '-'} · ${r.representante_parentesco || '-'}</td>
                             <td><strong>${r.sacramento_realizar}</strong></td>
@@ -1079,15 +1166,15 @@
 
         const headers = [
             'Nombre y apellido catequizando', 'Fecha nacimiento', 'Edad', 'Cédula catequizando',
-            'Dirección catequizando', 'Teléfono catequizando', 'Nombre y apellido representante',
-            'Cédula representante', 'Dirección representante', 'Teléfono representante',
-            'Parentesco', 'Sacramento a realizar', 'Fecha inscripción al sacramento'
+            'Dirección catequizando', 'Teléfono catequizando', 'Catequista asignado',
+            'Nombre y apellido representante', 'Cédula representante', 'Dirección representante',
+            'Teléfono representante', 'Parentesco', 'Sacramento a realizar', 'Fecha inscripción al sacramento'
         ];
         const rows = ultimoReporteFilas.map(r => [
             r.catequizando_nombre, r.catequizando_nacimiento, r.catequizando_edad, r.catequizando_cedula,
-            r.catequizando_direccion, r.catequizando_telefono, r.representante_nombre,
-            r.representante_cedula, r.representante_direccion, r.representante_telefono,
-            r.representante_parentesco, r.sacramento_realizar, r.fecha_inscripcion_sacramento
+            r.catequizando_direccion, r.catequizando_telefono, r.catequista_asignado,
+            r.representante_nombre, r.representante_cedula, r.representante_direccion,
+            r.representante_telefono, r.representante_parentesco, r.sacramento_realizar, r.fecha_inscripcion_sacramento
         ].map(v => `"${String(v ?? '').replace(/"/g, '""')}"`).join(','));
 
         const blob = new Blob(['\uFEFF' + [headers.join(','), ...rows].join('\n')], { type: 'text/csv;charset=utf-8;' });
