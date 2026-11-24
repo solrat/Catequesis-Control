@@ -45,7 +45,7 @@
         }
         .banner-bienvenida h2 { margin: 0 0 4px 0; font-size: 18px; color: #1b5e20; }
         .banner-bienvenida p { margin: 0; font-size: 13px; color: #555; }
-              .menu-grid {
+            .menu-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 12px;
@@ -107,7 +107,7 @@
     </style>
 </head>
 <body>
- <header>
+<header>
     <div class="header-info">
         <h2 id="tituloSistema" style="margin:0; font-size:18px;">Sistema de Catequesis</h2>
         <span id="badgeRolUsuario" class="badge-rol">Verificando perfil...</span>
@@ -137,12 +137,16 @@
         </div>
         <div class="card-menu" data-tab="sec-formacion">
             <h3>Talleres y Reportes</h3>
-            <p>Formación, quiz, reportes sacramentales y ajustes.</p>
+            <p>Formación, quiz y reportes sacramentales.</p>
+        </div>
+        <div class="card-menu" id="cardPersonalizacion" data-tab="sec-personalizacion" style="display:none;">
+            <h3>Personalizar Parroquia</h3>
+            <p>Nombre de parroquia, zona diocesana y parámetros.</p>
         </div>
     </div>
 
     <div class="modulo-box">
-           <section id="sec-catequizandos" class="section active">
+             <section id="sec-catequizandos" class="section active">
             <h3>Catequizandos — Boleta de Inscripción</h3>
 
             <div style="background:#f9fbf9; border:1px solid #d7e2d7; border-radius:8px; padding:12px; margin-bottom:14px;">
@@ -236,7 +240,7 @@
                     </div>
                 </div>
             </div>
-               <div style="background:#f1f8e9; border:1px solid #c5e1a5; border-radius:8px; padding:12px; margin-bottom:14px;">
+                   <div style="background:#f1f8e9; border:1px solid #c5e1a5; border-radius:8px; padding:12px; margin-bottom:14px;">
                 <strong style="display:block; margin-bottom:8px; color:#1b5e20;">Consultar catequizandos asignados por catequista</strong>
                 <div class="form-grid" style="margin-bottom:6px;">
                     <div class="campo-box">
@@ -295,8 +299,8 @@
                     <tbody id="tbodyCatequizandos"></tbody>
                 </table>
             </div>
-           </section>
-             <section id="sec-asistencia" class="section">
+             </section>
+              <section id="sec-asistencia" class="section">
             <h3>Asistencia de Catequizandos</h3>
             <div class="metricas-grid">
                 <div class="metrica-card"><strong id="metMesesClase">0</strong><span>Meses de clase impartidos</span></div>
@@ -458,9 +462,9 @@
                     </table>
                 </div>
             </div>
-    </section>
-          <section id="sec-formacion" class="section">
-            <h3>Talleres, Quiz, Reportes y Configuración</h3>
+        </section>
+           <section id="sec-formacion" class="section">
+            <h3>Talleres, Quiz y Reportes</h3>
             <div class="form-grid">
                 <div class="campo-box"><label for="tallerTitulo">Título del taller</label><input type="text" id="tallerTitulo" placeholder="Título"></div>
                 <div class="campo-box"><label for="tallerFecha">Fecha</label><input type="date" id="tallerFecha"></div>
@@ -505,9 +509,11 @@
                 <button type="button" class="btn-azul" id="btnImprimirReporte">Imprimir</button>
             </div>
             <div id="salidaReporte" class="tabla-wrap"></div>
+        </section>
 
-            <div id="boxConfigParroquia" class="panel-detalle" style="margin-top:20px;">
-                <h4>Personalización de la Parroquia</h4>
+        <section id="sec-personalizacion" class="section">
+            <h3>Personalización de la Parroquia</h3>
+            <div id="boxConfigParroquia" class="panel-detalle" style="display:block; margin-top:10px;">
                 <div class="form-grid">
                     <div class="campo-box">
                         <label for="cfgNombreParroquia">Nombre de la parroquia</label>
@@ -529,7 +535,7 @@
         </section>
     </div>
 </div>
- <script type="module">
+  <script type="module">
     import { supabase } from './supabaseClient.js';
 
     window.appState = {
@@ -725,9 +731,13 @@
         actualizarBannerBienvenida(session);
 
         const esSup = esRolSupervisor(window.appState.rolActual);
-        document.getElementById('boxConfigParroquia').style.display = esSup ? 'block' : 'none';
-        document.getElementById('boxRolNuevoEquipo').style.display = esSup ? 'flex' : 'none';
+        const cardPers = document.getElementById('cardPersonalizacion');
+        if (cardPers) cardPers.style.display = esSup ? 'block' : 'none';
+        if (!esSup && document.getElementById('sec-personalizacion')?.classList.contains('active')) {
+            document.querySelector('.card-menu[data-tab="sec-catequizandos"]')?.click();
+        }
 
+        document.getElementById('boxRolNuevoEquipo').style.display = esSup ? 'flex' : 'none';
         const boxRegistroEquipo = document.getElementById('boxRegistroEquipo');
         if (boxRegistroEquipo) {
             boxRegistroEquipo.style.display = esSup ? 'grid' : 'none';
@@ -749,7 +759,7 @@
             if (card.dataset.tab === 'sec-formacion') generarReporte();
         });
     });
-      function poblarSelectoresCatequistas() {
+        function poblarSelectoresCatequistas() {
         const selForm = document.getElementById('catCatequistaAsignado');
         const selConsulta = document.getElementById('consultaCatequistaSelect');
         const selSector = document.getElementById('consultaSectorCatequista');
@@ -1067,8 +1077,8 @@
         renderizarCatequizandos();
         renderizarListaTomaAsistencia();
         renderizarCatequistas();
-     }
-        document.getElementById('asisFecha').valueAsDate = new Date();
+    }
+       document.getElementById('asisFecha').valueAsDate = new Date();
     document.getElementById('visCatqFecha').valueAsDate = new Date();
 
     function renderizarListaTomaAsistencia() {
@@ -1339,8 +1349,8 @@
         renderizarCatequistas();
         renderizarCatequizandos();
         await cargarVisitasCatequistas();
-     }
-       document.getElementById('cfgNombreParroquia')?.addEventListener('input', poblarSugerenciasParroquiaYZona);
+      }
+        document.getElementById('cfgNombreParroquia')?.addEventListener('input', poblarSugerenciasParroquiaYZona);
 
     document.getElementById('btnGuardarConfigParroquia')?.addEventListener('click', async () => {
         if (!esRolSupervisor(window.appState.rolActual)) {
