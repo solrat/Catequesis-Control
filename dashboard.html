@@ -107,7 +107,7 @@
     </style>
 </head>
 <body>
-   <header>
+  <header>
     <div class="header-info">
         <h2 id="tituloSistema" style="margin:0; font-size:18px;">Sistema de Catequesis</h2>
         <span id="badgeRolUsuario" class="badge-rol">Verificando perfil...</span>
@@ -142,7 +142,7 @@
     </div>
 
     <div class="modulo-box">
-              <section id="sec-catequizandos" class="section active">
+            <section id="sec-catequizandos" class="section active">
             <h3>Catequizandos — Boleta de Inscripción</h3>
 
             <div style="background:#f9fbf9; border:1px solid #d7e2d7; border-radius:8px; padding:12px; margin-bottom:14px;">
@@ -236,7 +236,7 @@
                     </div>
                 </div>
             </div>
-                       <div style="background:#f1f8e9; border:1px solid #c5e1a5; border-radius:8px; padding:12px; margin-bottom:14px;">
+                  <div style="background:#f1f8e9; border:1px solid #c5e1a5; border-radius:8px; padding:12px; margin-bottom:14px;">
                 <strong style="display:block; margin-bottom:8px; color:#1b5e20;">Consultar catequizandos asignados por catequista</strong>
                 <div class="form-grid" style="margin-bottom:6px;">
                     <div class="campo-box">
@@ -295,7 +295,7 @@
                     <tbody id="tbodyCatequizandos"></tbody>
                 </table>
             </div>
-              </section>
+            </section>
                 <section id="sec-asistencia" class="section">
             <h3>Asistencia de Catequizandos</h3>
             <div class="metricas-grid">
@@ -458,8 +458,8 @@
                     </table>
                 </div>
             </div>
-            </section>
-                    <section id="sec-formacion" class="section">
+    </section>
+            <section id="sec-formacion" class="section">
             <h3>Talleres, Quiz, Reportes y Configuración</h3>
             <div class="form-grid">
                 <div class="campo-box"><label for="tallerTitulo">Título del taller</label><input type="text" id="tallerTitulo" placeholder="Título"></div>
@@ -510,7 +510,7 @@
                 <h4>Personalización de la Parroquia</h4>
                 <div class="form-grid">
                     <div class="campo-box">
-                        <label for="cfgNombreParroquia">Parroquia</label>
+                        <label for="cfgNombreParroquia">Parroquia activa</label>
                         <select id="cfgNombreParroquia">
                             <option value="">-- Seleccionar parroquia --</option>
                         </select>
@@ -520,6 +520,40 @@
                     <div class="campo-box"><label for="cfgVisitasCat">Visitas catequista</label><input type="number" id="cfgVisitasCat" min="1"></div>
                     <div class="campo-box"><label for="cfgEdadMinima">Edad mínima etapa</label><input type="number" id="cfgEdadMinima" min="1"></div>
                     <div class="campo-box"><button type="button" class="btn-verde" id="btnGuardarConfigParroquia">Guardar Configuración</button></div>
+                </div>
+
+                <hr style="border:0; border-top:1px dashed #ccc; margin:14px 0;">
+                <strong style="display:block; margin-bottom:8px; color:#1b5e20;">Agregar zona diocesana</strong>
+                <div class="form-grid">
+                    <div class="campo-box">
+                        <label for="nuevaZonaNombre">Nombre de la zona diocesana</label>
+                        <input type="text" id="nuevaZonaNombre" placeholder="Ej: Zona Pastoral Centro">
+                    </div>
+                    <div class="campo-box">
+                        <button type="button" class="btn-gris" id="btnRegistrarZona">Agregar Zona Diocesana</button>
+                    </div>
+                </div>
+
+                <hr style="border:0; border-top:1px dashed #ccc; margin:14px 0;">
+                <strong style="display:block; margin-bottom:8px; color:#1b5e20;">Registrar nueva parroquia</strong>
+                <div class="form-grid">
+                    <div class="campo-box">
+                        <label for="nuevaParroquiaNombre">Nombre de la parroquia</label>
+                        <input type="text" id="nuevaParroquiaNombre" placeholder="Ej: San José">
+                    </div>
+                    <div class="campo-box">
+                        <label for="nuevaParroquiaLocalidad">Localidad</label>
+                        <input type="text" id="nuevaParroquiaLocalidad" placeholder="Ej: Centro">
+                    </div>
+                    <div class="campo-box">
+                        <label for="nuevaParroquiaZona">Zona diocesana</label>
+                        <select id="nuevaParroquiaZona">
+                            <option value="">-- Sin zona --</option>
+                        </select>
+                    </div>
+                    <div class="campo-box">
+                        <button type="button" class="btn-azul" id="btnRegistrarParroquia">Registrar Parroquia</button>
+                    </div>
                 </div>
             </div>
         </section>
@@ -585,6 +619,14 @@
         return Boolean(cz.visita_catequista_1_fecha && cz.visita_catequista_2_fecha);
     }
 
+    function poblarSelectorZonas() {
+        const selNuevaZona = document.getElementById('nuevaParroquiaZona');
+        if (selNuevaZona) {
+            selNuevaZona.innerHTML = '<option value="">-- Sin zona --</option>' +
+                zonasDiocesanasCache.map(z => `<option value="${z.id}">${z.nombre}</option>`).join('');
+        }
+    }
+
     async function cargarParroquiasYConfig() {
         const [{ data: zonasData }, { data: parroquiasData }, { data: cfgData }] = await Promise.all([
             supabase.from('zonas_diocesanas').select('*').eq('activa', true).order('nombre', { ascending: true }),
@@ -615,6 +657,7 @@
                 selCfgParroquia.value = window.appState.configParroquia.nombre_parroquia;
             }
         }
+        poblarSelectorZonas();
 
         const cfg = window.appState.configParroquia;
         document.getElementById('infoParroquiaHeader').textContent =
@@ -704,7 +747,7 @@
             if (card.dataset.tab === 'sec-formacion') generarReporte();
         });
     });
-     function poblarSelectoresCatequistas() {
+        function poblarSelectoresCatequistas() {
         const selForm = document.getElementById('catCatequistaAsignado');
         const selConsulta = document.getElementById('consultaCatequistaSelect');
         const selSector = document.getElementById('consultaSectorCatequista');
@@ -937,7 +980,7 @@
         document.getElementById(id).addEventListener('input', renderizarCatequizandos);
         document.getElementById(id).addEventListener('change', renderizarCatequizandos);
     });
-        window.registrarVisitaCatequizando = async (id, numVisita) => {
+       window.registrarVisitaCatequizando = async (id, numVisita) => {
         const nota = prompt(`Indica la observación de la Visita ${numVisita} del catequista al catequizando:`);
         if (!nota || !nota.trim()) return alert('Debes ingresar una observación de la visita.');
         const fechaHoy = new Date().toISOString().slice(0, 10);
@@ -1295,7 +1338,58 @@
         renderizarCatequizandos();
         await cargarVisitasCatequistas();
     }
-       function obtenerFilasReporte() {
+        document.getElementById('btnRegistrarZona')?.addEventListener('click', async () => {
+        if (!['parroco', 'master'].includes(window.appState.rolActual)) {
+            return alert('Solo el párroco o coordinador pueden agregar zonas diocesanas.');
+        }
+        const nombreZona = document.getElementById('nuevaZonaNombre').value.trim();
+        if (!nombreZona) return alert('Ingresa el nombre de la zona diocesana.');
+
+        const { data, error } = await supabase
+            .from('zonas_diocesanas')
+            .insert({ nombre: nombreZona, activa: true })
+            .select()
+            .maybeSingle();
+
+        if (error) return alert('Error al agregar zona diocesana: ' + error.message);
+
+        document.getElementById('nuevaZonaNombre').value = '';
+        await cargarParroquiasYConfig();
+        if (data?.id && document.getElementById('nuevaParroquiaZona')) {
+            document.getElementById('nuevaParroquiaZona').value = data.id;
+        }
+        alert(`Zona diocesana "${nombreZona}" agregada correctamente.`);
+    });
+
+    document.getElementById('btnRegistrarParroquia')?.addEventListener('click', async () => {
+        if (!['parroco', 'master'].includes(window.appState.rolActual)) {
+            return alert('Solo el párroco o coordinador pueden registrar parroquias.');
+        }
+        const nombre = document.getElementById('nuevaParroquiaNombre').value.trim();
+        const localidad = document.getElementById('nuevaParroquiaLocalidad').value.trim();
+        const zonaId = document.getElementById('nuevaParroquiaZona').value || null;
+
+        if (!nombre) return alert('Ingresa el nombre de la parroquia.');
+
+        const { error } = await supabase.from('parroquias').insert({
+            nombre,
+            localidad: localidad || null,
+            zona_diocesana_id: zonaId,
+            activa: true
+        });
+
+        if (error) return alert('Error al registrar parroquia: ' + error.message);
+
+        document.getElementById('nuevaParroquiaNombre').value = '';
+        document.getElementById('nuevaParroquiaLocalidad').value = '';
+        await cargarParroquiasYConfig();
+        if (document.getElementById('cfgNombreParroquia')) {
+            document.getElementById('cfgNombreParroquia').value = nombre;
+        }
+        alert(`Parroquia "${nombre}" registrada correctamente.`);
+    });
+
+    function obtenerFilasReporte() {
         const sacFiltro = document.getElementById('filtroReporteSacramento').value;
         const desde = document.getElementById('repDesde').value;
         const hasta = document.getElementById('repHasta').value;
