@@ -20,6 +20,11 @@
         input { width: 100%; max-width: 100%; padding: 9px 10px; border: 1px solid #ccc; border-radius: 6px; margin-bottom: 12px; font-size: 14px; }
         button { width: 100%; max-width: 100%; background: #2e7d32; color: white; border: none; padding: 10px; border-radius: 6px; font-size: 14px; font-weight: bold; cursor: pointer; }
         button:hover { background: #256428; }
+        .btn-link-recovery { background: none; color: #1565c0; font-size: 12px; font-weight: bold; padding: 4px; width: auto; text-decoration: underline; }
+        .btn-link-recovery:hover { background: none; color: #0d47a1; }
+        .btn-enviar-rec { background: #1565c0; }
+        .btn-enviar-rec:hover { background: #0d47a1; }
+        .box-recovery { display: none; margin-top: 12px; padding-top: 12px; border-top: 1px solid #e0e0e0; }
         .msg { margin-top: 10px; font-size: 12px; text-align: center; color: #c62828; }
         .modal-recovery { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.55); justify-content: center; align-items: center; padding: 12px; z-index: 999; }
         .modal-recovery-card { background: white; width: 100%; max-width: 380px; padding: 20px 16px; border-radius: 10px; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2); }
@@ -53,11 +58,27 @@
 
         <form id="formLogin">
             <label for="loginUsuario">Usuario (o correo)</label>
-            <input type="text" id="loginUsuario" placeholder="Ej: carmen1 o maria.perez" required autocomplete="username">
+            <input type="text" id="loginUsuario" placeholder="Ej: parroco o correo@ejemplo.com" required autocomplete="username">
             <label for="loginPassword">Contraseña</label>
             <input type="password" id="loginPassword" placeholder="Tu contraseña" required autocomplete="current-password">
             <button type="submit" id="btnEntrar">Ingresar</button>
         </form>
+
+        <div style="margin-top:10px; text-align:center;">
+            <button type="button" id="btnAbrirOlvideClave" class="btn-link-recovery">
+                ¿Olvidaste tu contraseña?
+            </button>
+        </div>
+
+        <div id="boxSolicitarRecuperacion" class="box-recovery">
+            <label for="recUsuarioOEmail">Recuperar acceso — Usuario o correo</label>
+            <input type="text" id="recUsuarioOEmail" placeholder="Ej: parroco o correo@ejemplo.com">
+            <button type="button" id="btnEnviarEnlaceRecuperacion" class="btn-enviar-rec">
+                Enviar enlace de recuperación
+            </button>
+            <div class="msg" id="msgRecuperacion"></div>
+        </div>
+
         <div class="msg" id="msgLogin"></div>
     </div>
 
@@ -133,6 +154,63 @@
 
         cargarPersonalizacionLogin()
 
+        document.getElementById('btnAbrirOlvideClave')?.addEventListener('click', () => {
+            const box = document.getElementById('boxSolicitarRecuperacion')
+            if (!box) return
+            const estaVisible = box.style.display === 'block'
+            box.style.display = estaVisible ? 'none' : 'block'
+            if (!estaVisible) {
+                const actual = document.getElementById('loginUsuario')?.value.trim()
+                if (actual) document.getElementById('recUsuarioOEmail').value = actual
+            }
+        })
+
+        document.getElementById('btnEnviarEnlaceRecuperacion')?.addEventListener('click', async () => {
+            const msgRec = document.getElementById('msgRecuperacion')
+            const btnRec = document.getElementById('btnEnviarEnlaceRecuperacion')
+            const entrada = (document.getElementById('recUsuarioOEmail')?.value || '').trim()
+
+            msgRec.style.color = '#c62828'
+            msgRec.textContent = ''
+
+            if (!entrada) {
+                msgRec.textContent = 'Ingresa tu usuario o correo electrónico.'
+                return
+            }
+
+            btnRec.disabled = true
+            btnRec.textContent = 'Enviando...'
+
+            try {
+                let emailDestino = entrada
+                if (!entrada.includes('@')) {
+                    const { data: correoResuelto, error: rpcErr } = await supabase
+                        .rpc('obtener_correo_por_usuario', { p_usuario: entrada })
+
+                    if (rpcErr || !correoResuelto) {
+                        throw new Error('No se encontró un correo vinculado a ese usuario.')
+                    }
+                    emailDestino = correoResuelto
+                }
+
+                const redirectUrl = `${window.location.origin}${window.location.pathname}`
+                const { error } = await supabase.auth.resetPasswordForEmail(emailDestino, {
+                    redirectTo: redirectUrl
+                })
+
+                if (error) throw error
+
+                msgRec.style.color = '#1b5e20'
+                msgRec.textContent = `Se envió el enlace de recuperación a ${emailDestino}. Revisa tu bandeja o spam.`
+            } catch (err) {
+                msgRec.style.color = '#c62828'
+                msgRec.textContent = err.message || 'No se pudo enviar el correo de recuperación.'
+            } finally {
+                btnRec.disabled = false
+                btnRec.textContent = 'Enviar enlace de recuperación'
+            }
+        })
+
         document.getElementById('formNuevaPassword')?.addEventListener('submit', async (e) => {
             e.preventDefault()
             const msg = document.getElementById('msgNuevaClave')
@@ -199,4 +277,3 @@
     </script>
 </body>
 </html>
-                    
